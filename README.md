@@ -1,6 +1,6 @@
 ownFX
 =====
-ownFX is the attempt to create a "Alien FX" like lighning system for custom build PCs.
+ownFX is the attempt to create a "Alien FX" like lightning system for custom build PCs.
 A Arduino which is connected to the PC via USB is used for communication with a RGB-LED-strip. The lighning system is 
 controlled by a webpage hosted on the local machine in order allow remote controlling.
 
