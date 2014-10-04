@@ -16,6 +16,13 @@ body {
   padding-bottom: 10px;
   border-bottom: 1px solid #eee;
 }
+
+.loading-splash {
+  font-weight: bold;
+  text-align: center;
+  color: #888;
+}
+  
 /*
  * Top navigation
  * Hide default border to remove 1px line.
@@ -30,6 +37,9 @@ body {
 
 /* Hide for mobile, show later */
 .sidebar {
+  display: none;
+}
+#profiles_list {
   display: none;
 }
 @media (min-width: 768px) {
@@ -107,33 +117,35 @@ body {
 .frame {
   border-radius: 5px;
   height: 30px;
+  line-height: 30px;
   box-shadow: 0px 0px 3px #888;
   background: #d0d0d0;
   position:relative;
+  font-size: 14px;
+  color:white;
+  text-align: center;
+  vertical-align: -50%;
 }
-.frame-end, .frame-new {
+.frame-new {
   width: 30px;
   margin-left: auto;
   margin-right: auto;
   border-radius: 50%;
+
 }
 .frame-new:hover {
   background-color: #428bca;
   cursor: pointer;
 }
-.frame-end:before, .frame-new:before {
+.frame-new:before {
   color:white;
   font-size: 20px;
-  content:'\e031';
   font-family: 'Glyphicons Halflings';
-  vertical-align: -10px;
   width:30px;
-  margin-left: 5px;
-}
-.frame-new:before {
   content:'\2b';
-  vertical-align: -8px;
-  margin-left: 6px;
+  margin-left: 2px;
+  vertical-align: -4px;
+  line-height: normal;
 }
 .frame-connector {
   margin: auto;
@@ -142,16 +154,15 @@ body {
   border-left: 5px dotted #d0d0d0;
 }
 .frame-connector:before {
-  content: '2s';
-  font-size: 16px;
+  content: attr(data-content);
+  font-size: 14px;
   vertical-align: -17px;
   margin-left: 10px;
 }
-
-.frame-connector-end:before {
-  content: '';
-}
-.main > h1 {
+.profile_edit > h1 {
   margin: 0;
   margin-bottom: 30px;
+}
+#profile_edit {
+  display: none;
 }

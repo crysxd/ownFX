@@ -62,28 +62,31 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar">
-            <li class="active"><a href="#"><span class="nav-icon glyphicon glyphicon-ok"></span>Profile 1</a></li>
-            <li><a href="#"><span class="nav-icon glyphicon"></span>Profile 2</a></li>
-            <li><a href="#"><span class="nav-icon glyphicon"></span>Profile 3</a></li>
-            <li><a href="#"><span class="nav-icon glyphicon"></span>Profile 4</a></li>
-          </ul>
-          <ul class="nav nav-sidebar">
-            <li><a href=""><span class="nav-icon glyphicon glyphicon-plus"></span>New Profile</a></li>
-          </ul>
+          <div id="profiles_list_loading" class="loading-splash">
+            Loading...
+          </div>
+          <div id="profiles_list">
+            <ul id="profiles_list_list" class="nav nav-sidebar"></ul>
+            <ul class="nav nav-sidebar">
+              <li><a href="#"><span class="nav-icon glyphicon glyphicon-plus"></span>New Profile</a></li>
+            </ul>
+          </div>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h1>Profile 1</h1>  
-          <div class="content">
-            <div class="frame" style="background: #ba0a0a;"></div>
-            <div class="frame-connector"></div>
-            <div class="frame" style="background: #4a5efc;"></div>
-            <div class="frame-connector"></div>
-            <div class="frame" style="background: #3dbe16;"></div>
-            <div class="frame-connector"></div>   
+          <div id="profile_edit_loading" class="loading-splash">
+            Loading...
+          </div>
+          <div id="profile_edit">
+            <h1 id="profile_edit_name">Profile 1</h1>  
+            <div id="profile_edit_configuration">
+              <div class="frame" style="background: #ba0a0a;"></div>
+              <div class="frame-connector"></div>
+              <div class="frame" style="background: #4a5efc;"></div>
+              <div class="frame-connector"></div>
+              <div class="frame" style="background: #3dbe16;"></div>
+              <div class="frame-connector"></div>   
+            </div>
             <div class="frame frame-new"></div>
-            <div class="frame-connector frame-connector-end"></div>   
-            <div class="frame frame-end"></div>
           </div>
         </div>
       </div>
@@ -95,6 +98,8 @@
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/docs.min.js"></script>
+    <script src="js/rest.js"></script>
+    <script src="js/index.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="js/ie10-viewport-bug-workaround.js"></script>
   </body>
