@@ -1,12 +1,24 @@
 var urlProfilesList = 'rest/profiles_list';
 var urlProfileData = 'rest/profile';
 var ledCount = 60;
-var currentProfileConfiguration;
-var currentProfileConfigurationBackup;
+var maxFrameCount = 12;
+var curConfiguration;
+var curConfigurationBackup;
 
 $(function() {
   //Load list of all profiles and display them in the sidebar
   loadProfilesList();
+  
+  //Add listern to "new frame" button
+  $('.frame-new').click(function() {
+    if(curConfiguration.frames.length >= maxFrameCount) {
+      alert('You can not add more than ' + maxFrameCount + ' Frames!');
+      return;
+      
+    }
+    appendFrameToProfileConfiguration();
+    
+  });
   
 });
 
@@ -24,7 +36,7 @@ function loadProfilesList() {
           //iterate over profiles from json object
           $(json).each(function(i, e) {
             //add a list entry for profile
-            $('#profiles_list_list').append('<li profileid="' + e.id + '"><a href="#"><span class="nav-icon glyphicon"></span>'+ e.name + '</a></li>');
+            $('#profiles_list').append('<li profileid="' + e.id + '"><a href="#"><span class="nav-icon glyphicon"></span>'+ e.name + '</a></li>');
 
             //check if the current profile is active. if so mark it
             if(e.active) {
@@ -33,7 +45,7 @@ function loadProfilesList() {
             }
 
             //Add click listener to change the displayed project
-            $('#profiles_list_list li:last').click(function() {
+            $('#profiles_list li:last').click(function() {
               showProfile(e.id);
 
             });
@@ -61,15 +73,15 @@ function loadProfilesList() {
 
 function setActiveProfile(id) {
   //Remove the ok glyphicon from all and add it to the active profile
-  $('#profiles_list_list li>a>span').removeClass('glyphicon-ok');
-  $('#profiles_list_list li[profileid=' + id + ']>a>span').addClass('glyphicon-ok');
+  $('#profiles_list li>a>span').removeClass('glyphicon-ok');
+  $('#profiles_list li[profileid=' + id + ']>a>span').addClass('glyphicon-ok');
 
 }
 
 function showProfile(id) {
   //Update sidebar active entry
-  $('#profiles_list_list li').removeClass('active');
-  $('#profiles_list_list li[profileid=' + id + ']').addClass('active');
+  $('#profiles_list li').removeClass('active');
+  $('#profiles_list li[profileid=' + id + ']').addClass('active');
   
   $('#profile_edit').fadeOut(function() {
     //Fade Loading animation in
@@ -80,17 +92,17 @@ function showProfile(id) {
         if(state == 200) {
           //Transform laoded text in object
           try {
-            currentProfileConfiguration = JSON.parse(result);
-            currentProfileConfigurationBackup = JSON.parse(result);
+            curConfiguration = JSON.parse(result);
+            curConfigurationBackup = JSON.parse(result);
             
             //Fade the loading animation and div out
             $('#profile_edit_loading').fadeOut(function() {
 
               //Set profile's name
-              $('#profile_edit_name').html(currentProfileConfiguration.name);
+              $('#profile_edit_name').html(curConfiguration.name);
 
               //Apply current configuration
-              applyCurrentProfileConfiguration();
+              applycurConfiguration();
 
               //Everything is setup, fade back in
               $('#profile_edit').fadeIn();
@@ -113,14 +125,13 @@ function showProfile(id) {
   });
 }
 
-function applyCurrentProfileConfiguration() {
+function applycurConfiguration() {
   //Empty configuration
   $('#profile_edit_configuration').html('');
   
   //iterate over all frames
-  $(currentProfileConfiguration.frames).each(function(i) {
+  $(curConfiguration.frames).each(function(i) {
     appendFrameToProfileConfiguration();
-    updateFrame(i);
     
   });
 }
@@ -128,11 +139,20 @@ function applyCurrentProfileConfiguration() {
 function appendFrameToProfileConfiguration() {
   $('#profile_edit_configuration').append('<div class="frame"></div>');
   $('#profile_edit_configuration').append('<div class="frame-connector"></div>');
+  var lastIndex = $('#profile_edit_configuration').children().length/2-1;
+  console.log(lastIndex);
   
+  if(curConfiguration.frames[lastIndex] === undefined) {
+   curConfiguration.frames[lastIndex] = {pauseTime:0, transitionTime:2000, colorStops:[{i:0, r:0, g:0, b:255, a:255}]};
+    
+  }
+  
+  updateFrame(lastIndex);
+
 }
 
 function updateFrame(index) {
-  var frame = currentProfileConfiguration.frames[index];
+  var frame = curConfiguration.frames[index];
   var colorStop = frame.colorStops[0];
   $('#profile_edit_configuration .frame:eq(' + index + ')').css('background-image', createGradientFromColorStops(frame.colorStops));
   $('#profile_edit_configuration .frame:eq(' + index + ')').html(makeMsReadable(frame.pauseTime));
@@ -158,9 +178,7 @@ function createGradientFromColorStops(colorStops) {
     
   });
   
-  gradient = gradient.substr(0, gradient.length-1) + ')';
-  console.log(gradient);
-  
+  gradient = gradient.substr(0, gradient.length-1) + ')';  
   return gradient;
   
 }
