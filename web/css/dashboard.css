@@ -66,7 +66,12 @@ body {
   max-height: 50%;
   overflow-y: auto;
   overflow-x: hidden;
-  border-top: 1px solid #888;
+}
+
+#sidebar_configuration {
+  background-image: url(../img/seperator_up.png);
+  background-repeat: no-repeat;
+  background-position: bottom;
 }
 
 /* Sidebar navigation */
