@@ -1,0 +1,50 @@
+[
+  {
+    "transitionTime":2000,
+    "pauseTime":2000,
+    [
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":1},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0}
+    ]
+  },
+  {
+    "transitionTime":2000,
+    "pauseTime":2000,
+    [
+      {"ledIndex":65536, "rgba":"00FF00FF", "used":1},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0}
+    ]
+  },
+  {
+    "transitionTime":2000,
+    "pauseTime":2000,
+    [
+      {"ledIndex":65536, "rgba":"0000FFFF", "used":1},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
+      {"ledIndex":65536, "rgba":"FF0000FF", "used":0}
+    ]
+  }
+]
