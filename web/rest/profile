@@ -1,50 +1,30 @@
-[
-  {
-    "transitionTime":2000,
-    "pauseTime":2000,
-    [
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":1},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0}
-    ]
-  },
-  {
-    "transitionTime":2000,
-    "pauseTime":2000,
-    [
-      {"ledIndex":65536, "rgba":"00FF00FF", "used":1},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0}
-    ]
-  },
-  {
-    "transitionTime":2000,
-    "pauseTime":2000,
-    [
-      {"ledIndex":65536, "rgba":"0000FFFF", "used":1},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0},
-      {"ledIndex":65536, "rgba":"FF0000FF", "used":0}
-    ]
-  }
-]
+{
+  "id":0,
+  "name":"Profile 1",
+  "frames":[
+    {
+      "transitionTime":2500,
+      "pauseTime":2000,
+      "colorStops":[
+        {"i":0, "r":255, "g":0, "b":0, "a":255},
+        {"i":60, "r":125, "g":125, "b":0, "a":255}
+      ]
+    },
+    {
+      "transitionTime":2000,
+      "pauseTime":2000,
+      "colorStops":[
+        {"i":0, "r":0, "g":255, "b":0, "a":255},
+        {"i":15, "r":0, "g":0, "b":255, "a":0},
+        {"i":60, "r":255, "g":0, "b":0, "a":0}
+      ]
+    },
+    {
+      "transitionTime":2000,
+      "pauseTime":2000,
+      "colorStops":[
+        {"i":34, "r":0, "g":0, "b":255, "a":255}
+      ]
+    }
+  ]
+}

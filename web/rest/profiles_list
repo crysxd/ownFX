@@ -1,8 +1,8 @@
 [
-  {"id":0, "name":"Profile 1"},
-  {"id":1, "name":"Profile 2"},
-  {"id":2, "name":"Profile 3"},
-  {"id":3, "name":"Profile 4"},
-  {"id":4, "name":"Profile 5"},
-  {"id":5, "name":"Profile 6"}
+  {"id":0, "name":"Profile 1", "active":0},
+  {"id":1, "name":"Profile 2", "active":1},
+  {"id":2, "name":"Profile 3", "active":0},
+  {"id":3, "name":"Profile 4", "active":0},
+  {"id":4, "name":"Profile 5", "active":0},
+  {"id":5, "name":"Profile 6", "active":0}
 ]
