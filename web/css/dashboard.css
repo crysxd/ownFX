@@ -16,11 +16,19 @@ body {
   padding-bottom: 10px;
   border-bottom: 1px solid #eee;
 }
-
 .loading-splash {
   font-weight: bold;
   text-align: center;
   color: #000;
+}
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+input {
+  -webkit-user-select: text;
+  -moz-user-select: text;
 }
   
 /*

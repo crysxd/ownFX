@@ -4,6 +4,8 @@ var ledCount = 60;
 var maxFrameCount = 12;
 var config;
 var configBackup;
+var selectedFrameIndex;
+var draggedColorStopIndex;
 
 $(function() {
   //Load list of all profiles and display them in the sidebar
@@ -17,6 +19,13 @@ $(function() {
       
     }
     appendFrameToProfileConfiguration();
+    
+  });
+   
+  //Add mouseup listener to end drag of color stop
+  $(document).mouseup(function() {
+      $(document).off('mousemove');
+      draggedColorStopIndex = -1;
     
   });
   
@@ -170,8 +179,9 @@ function appendFrameToProfileConfiguration() {
   }
   
   //Add a click function to the frame to select it on click
-  frame.click(function() {
+  frame.mousedown(function() {
     selectFrame(index);
+    
   });
   
   //Update gradient and color stops for the new frame
@@ -208,6 +218,11 @@ function getFrameConenctorNode(index) {
   
 }
 
+function getColorStopNode(frameIndex, colorStopIndex) {
+  return $('#profile_edit_configuration .frame:eq(' + frameIndex + ') .color-stop:eq(' + colorStopIndex + ')');
+  
+}
+
 function renderColorStops(colorStops, index) {
   //Save the framenode and clear its contents
   var frameNode = getFrameNode(index);  
@@ -223,11 +238,39 @@ function renderColorStops(colorStops, index) {
     
   }
   
+  $(colorStops).each(function(i, e) {
+    if(i == colorStops.length-1)
+      return;
+    
+    if(e.i == colorStops[i+1].i) {
+      if(i == draggedColorStopIndex) {
+        e.i++;
+
+      } else if(i+1 == draggedColorStopIndex) {
+         colorStops[i+1].i--;
+
+      }
+    }
+    
+    if(e.i > colorStops[i+1].i) {
+      colorStops[i] = colorStops[i+1];
+      colorStops[i+1] = e;
+      
+      if(i == draggedColorStopIndex) {
+        draggedColorStopIndex=i+1
+      
+      } else if(i+1 == draggedColorStopIndex) {
+         draggedColorStopIndex = i;
+        
+      }
+    }  
+  });
+  
   //Start to build a CSS gradient
   var gradient = 'linear-gradient(to right, ';
   
   //Iterate over color stops
-  $(colorStops).each(function(){
+  $(colorStops).each(function(i){
     //Calculate the position for the HTML elements and the CSS gradient
     //% with two digits 
     var position = Math.round((this.i / ledCount)*10000)/100;
@@ -236,7 +279,7 @@ function renderColorStops(colorStops, index) {
     gradient += createCssRgb(this.r, this.g, this.b) + ' ' + position + '%,';
     
     //A a color stop to the HTML to be modified by the user
-    addColorStop(this.r, this.g, this.b, position, frameNode);
+    addColorStopNode(this.r, this.g, this.b, position, frameNode, index, i);
     
   });
   
@@ -248,7 +291,7 @@ function renderColorStops(colorStops, index) {
 
 }
 
-function addColorStop(r, g, b, position, frameNode) {
+function addColorStopNode(r, g, b, position, frameNode, frameIndex, colorStopIndex) {
   //Create a color stop node
   var colorStop = $('<div class="color-stop"></div>');
   
@@ -261,6 +304,45 @@ function addColorStop(r, g, b, position, frameNode) {
   //Add the color stop div to the frame
   frameNode.append(colorStop);
   
+  //Add mousedown listener to start drag
+  colorStop.mousedown(function() {
+    $(document).mousemove(onColorStopNodeDragged);
+    draggedColorStopIndex = colorStopIndex;
+    
+  });
+  
+}
+
+function onColorStopNodeDragged(e) {
+  if(draggedColorStopIndex < 0) {
+    return;
+    
+  }
+  
+  //Save nodes
+  var frameNode = getFrameNode(selectedFrameIndex);
+  var colorStopNode = getColorStopNode(selectedFrameIndex, draggedColorStopIndex);
+  
+  //calc min and max x-position
+  var halfWidth = colorStopNode.width() / 2;
+  var minx = $(frameNode).offset().left - halfWidth;
+  var maxx = minx + frameNode.width();
+  
+  if(e.clientX < minx) {
+    e.clientX = minx;
+    
+  } else if(e.clientX > maxx) {
+    e.clientX = maxx;
+    
+  }
+  
+  var ledNumber = Math.round((e.clientX - minx) / (maxx - minx) * ledCount);
+  
+  config.frames[selectedFrameIndex].colorStops[draggedColorStopIndex].i = ledNumber;
+  colorStopNode.css('left', e.clientX - minx + 'px');
+  updateFrame(selectedFrameIndex);
+  
+
 }
 
 function makeMsReadable(ms) {
@@ -276,6 +358,9 @@ function createCssRgb(r, g, b) {
 }
 
 function selectFrame(index) {
+  //Save index
+  selectedFrameIndex = index;
+  
   //Remove the frame-selected class from all frames 
   $('.frame').removeClass('frame-selected');
   
