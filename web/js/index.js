@@ -171,7 +171,7 @@ function appendFrameToProfileConfiguration() {
   
   //Add a click function to the frame to select it on click
   frame.click(function() {
-    selectFrame(lastIndex);
+    selectFrame(index);
   });
   
   //Update gradient and color stops for the new frame
