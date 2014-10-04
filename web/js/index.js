@@ -2,8 +2,8 @@ var urlProfilesList = 'rest/profiles_list';
 var urlProfileData = 'rest/profile';
 var ledCount = 60;
 var maxFrameCount = 12;
-var curConfiguration;
-var curConfigurationBackup;
+var config;
+var configBackup;
 
 $(function() {
   //Load list of all profiles and display them in the sidebar
@@ -11,7 +11,7 @@ $(function() {
   
   //Add listern to "new frame" button
   $('.frame-new').click(function() {
-    if(curConfiguration.frames.length >= maxFrameCount) {
+    if(config.frames.length >= maxFrameCount) {
       alert('You can not add more than ' + maxFrameCount + ' Frames!');
       return;
       
@@ -110,17 +110,17 @@ function showProfile(id) {
         if(state == 200) {
           //Transform laoded text in object
           try {
-            curConfiguration = JSON.parse(result);
-            curConfigurationBackup = JSON.parse(result);
+            config = JSON.parse(result);
+            configBackup = JSON.parse(result);
             
             //Fade the loading animation and div out
             $('#profile_edit_loading').fadeOut(function() {
 
               //Set profile's name
-              $('#profile_edit_name').html(curConfiguration.name);
+              $('#profile_edit_name').html(config.name);
 
               //Apply current configuration
-              applycurConfiguration();
+              applyConfig();
 
               //Everything is setup, fade back in
               $('#profile_edit').fadeIn();
@@ -143,46 +143,58 @@ function showProfile(id) {
   });
 }
 
-function applycurConfiguration() {
+function applyConfig() {
   //Empty configuration
   $('#profile_edit_configuration').html('');
   
   //iterate over all frames
-  $(curConfiguration.frames).each(function(i) {
+  $(config.frames).each(function(i) {
     appendFrameToProfileConfiguration();
     
   });
 }
 
 function appendFrameToProfileConfiguration() {
-  $('#profile_edit_configuration').append('<div class="frame"></div>');
-  $('#profile_edit_configuration').append('<div class="frame-connector"></div>');
-  var lastIndex = $('#profile_edit_configuration').children().length/2-1;
-  console.log(lastIndex);
-  
-  if(curConfiguration.frames[lastIndex] === undefined) {
-   curConfiguration.frames[lastIndex] = {pauseTime:0, transitionTime:2000, colorStops:[{i:0, r:0, g:0, b:255, a:255}]};
+  //Calculate the next frame index based on the number of existing frames
+  var index = $('#profile_edit_configuration .frame').length;
+
+  //Create frame and its connector
+  var frame = $('<div class="frame" index="' + index + '"></div>');
+  var frameConnector = $('<div class="frame-connector" index="' + index + '"></div>');
+  $('#profile_edit_configuration').append(frame, frameConnector);
+    
+  //Check if frame is in config, if not, create a new empty frame
+  if(config.frames[index] === undefined) {
+   config.frames[index] = {pauseTime:0, transitionTime:2000, colorStops:[{i:0, r:0, g:0, b:255, a:255}]};
     
   }
   
-  $('#profile_edit_configuration .frame:eq(' + lastIndex + ')').click(function() {
+  //Add a click function to the frame to select it on click
+  frame.click(function() {
     selectFrame(lastIndex);
   });
   
-  updateFrame(lastIndex);
-  selectFrame(lastIndex);
+  //Update gradient and color stops for the new frame
+  updateFrame(index);
+  
+  //Select the new Frame
+  selectFrame(index);
 
 }
 
 function updateFrame(index) {
-  var frame = curConfiguration.frames[index];
-  var colorStops = frame.colorStops;
+  //Save the frame to be updated
+  var frame = config.frames[index];
+  
+  //Save the frame node (the div Element representing the frame)
   var frameNode = getFrameNode(index);
   
+  //Update the shown times by setting the data-attribute
   frameNode.attr('data-content', makeMsReadable(frame.pauseTime));
   getFrameConenctorNode(index).attr('data-content', makeMsReadable(frame.transitionTime));
   
-  applyColorStops(colorStops, frameNode);
+  //Show ColorStops and gradient
+  renderColorStops(frame.colorStops, index);
 
 }
 
@@ -196,62 +208,89 @@ function getFrameConenctorNode(index) {
   
 }
 
-function applyColorStops(colorStops, frameNode) {
-  var gradient = 'linear-gradient(to right, ';
-
+function renderColorStops(colorStops, index) {
+  //Save the framenode and clear its contents
+  var frameNode = getFrameNode(index);  
   frameNode.html('');
-  
+
+  //If only one color stop is availabel, duplicate it
+  //This is necessary because CSS needs min two ColorStops
+  //Set the first to the first LED and the second to the last LED
   if(colorStops.length == 1) {
-    colorStops[1] = colorStops[0];
+    colorStops[1] = JSON.parse(JSON.stringify(colorStops[0]));
+    colorStops[0].i = 0;
+    colorStops[1].i = ledCount;
     
   }
   
+  //Start to build a CSS gradient
+  var gradient = 'linear-gradient(to right, ';
+  
+  //Iterate over color stops
   $(colorStops).each(function(){
+    //Calculate the position for the HTML elements and the CSS gradient
+    //% with two digits 
     var position = Math.round((this.i / ledCount)*10000)/100;
+    
+    //Add the stop to the gradient followed by a comma
     gradient += createCssRgb(this.r, this.g, this.b) + ' ' + position + '%,';
+    
+    //A a color stop to the HTML to be modified by the user
     addColorStop(this.r, this.g, this.b, position, frameNode);
     
   });
   
+  //Remove the last comma and add a ) to complete the syntax
   gradient = gradient.substr(0, gradient.length-1) + ')';  
+  
+  //Set the gradient
   frameNode.css('background-image', gradient);
 
 }
 
 function addColorStop(r, g, b, position, frameNode) {
-  console.log(position);
+  //Create a color stop node
   var colorStop = $('<div class="color-stop"></div>');
-  colorStop.append('<div class="color-stop-color"></div>')
-  colorStop.css('left', position + '%');
-  colorStop.children('.color-stop-color').css('background-color', createCssRgb(r, g, b));
   
+  //set its position in percent from the left
+  colorStop.css('left', position + '%');
+  
+  //Apply the color
+  colorStop.css('background-color', createCssRgb(r, g, b));
+  
+  //Add the color stop div to the frame
   frameNode.append(colorStop);
   
 }
 
 function makeMsReadable(ms) {
+  //Convert in secs ans add s
   return ms/1000 + 's';
   
 }
 
 function createCssRgb(r, g, b) {
+  //Create a CSS rgb function with the given values
   return 'rgb(' + r + ',' + g + ',' + b + ')';
+  
 }
 
 function selectFrame(index) {
-  //Remove the ok glyphicon from all and add it to the active profile
+  //Remove the frame-selected class from all frames 
   $('.frame').removeClass('frame-selected');
-  $('.frame:eq(' + index + ')').addClass('frame-selected');
+  
+  //Add it to the newly selected one
+  getFrameNode(index).addClass('frame-selected');
   
   //Set values
   $('#sidebar_title').html('Frame ' + (index + 1));
-  $('#frame_pause_time').val(curConfiguration.frames[index].pauseTime);
-  $('#frame_transition_time').val(curConfiguration.frames[index].transitionTime);
+  $('#frame_pause_time').val(config.frames[index].pauseTime);
+  $('#frame_transition_time').val(config.frames[index].transitionTime);
   
   //Save changes of pause time
   $('#frame_pause_time').off('change');
   $('#frame_pause_time').change(function() {
-    curConfiguration.frames[index].pauseTime = $('#frame_pause_time').val();
+    config.frames[index].pauseTime = $('#frame_pause_time').val();
     updateFrame(index);
     
   });
@@ -259,7 +298,7 @@ function selectFrame(index) {
   //Save changes of transition time
   $('#frame_transition_time').off('change');
   $('#frame_transition_time').change(function() {
-    curConfiguration.frames[index].transitionTime = $('#frame_transition_time').val();
+    config.frames[index].transitionTime = $('#frame_transition_time').val();
     updateFrame(index);
     
   });

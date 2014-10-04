@@ -129,11 +129,12 @@ body {
   vertical-align: -5px;
 }
 .frame-new {
-  width: 30px;
-  height: 30px;
+  width: 31px;
+  height: 31px;
   margin-left: auto;
   margin-right: auto;
   border-radius: 50%;
+  box-shadow: 0 0;
 
 }
 .frame-new:hover {
@@ -149,8 +150,8 @@ body {
   font-family: 'Glyphicons Halflings';
   width:30px;
   content:'\2b';
-  margin-left: 2px;
-  vertical-align: -4px;
+  margin-left: 3px;
+  vertical-align: -5px;
   line-height: normal;
 }
 .frame-connector {
@@ -174,22 +175,15 @@ body {
 }
 .frame .color-stop {
   z-index: 90000;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: #d0d0d0;
   position:absolute;
   left: 20%;
   top: 31px;
   cursor: default;
-  padding: 2px;
   box-shadow: 0px 0px 3px #000;
-  margin-left: -9px;
-}
-.color-stop .color-stop-color {
-  background: red;
-  height: 100%;
-  width: 100%;
-  cursor: pointer;
-  border-radius: 50%;
+  margin-left: -10px;
+  border: 2px solid #d0d0d0;
 }
