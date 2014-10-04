@@ -15,6 +15,7 @@
 
     <!-- Custom styles for this template -->
     <link href="css/dashboard.css" rel="stylesheet">
+    <link href="css/jquery.bootstrap-touchspin.min.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -48,8 +49,15 @@
             <li><a href="#">Help</a></li>
           </ul>
           <form class="navbar-form navbar-right" role="search">
-            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-cloud-upload"></span></button>
-            <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-thumbs-down"></span></button>
+            <div class="btn-group">
+              <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-cloud-upload"></span></button>
+              <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-thumbs-down"></span></button>
+              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                <span id="profiles_selected_name">Loading...</span>
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" id="profiles_list" role="menu"></ul>
+            </div>
           </form>   
         </div>
       </div>
@@ -57,15 +65,47 @@
   
     <div class="container-fluid">
       <div class="row">
+        
+        <!--Sidebar -->
         <div class="col-sm-3 col-md-2 sidebar">
-          <div class="btn-group">
-            <button type="button" class="btn btn-default btn-block btn-lg dropdown-toggle" data-toggle="dropdown">
-              <span id="profiles_selected_name">Loading...</span>
-              <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" id="profiles_list" role="menu"></ul>
+          <!-- Profile Dropdown -->
+          <h3>Frame 3</h3>
+          <hr>   
+          <div class="sidebar_content">
+            <!--Spinner Pause and TRansition time -->
+            <div class="form-group">
+              <label for="time">Pause Time</label>
+              <input id="frame_pause_time" type="text" value="0" name="time">
+              <label for="time">Transition Time</label>
+              <input id="frame_transition_time" type="text" value="0" name="time">
+              <label for="color_stop">Color Stops</label>
+              <div class="input-group">
+                <input type="text" class="form-control" name="color_stop" value="50">
+                <div class="input-group-btn">
+                <button type="button" class="btn btn-default">
+                  <span class="glyphicon glyphicon-ban-circle"></span>  
+                </button>
+                <button type="button" class="btn btn-default" style="background:red">&nbsp;</button>
+                </div>
+              </div>
+             <div class="input-group">
+                <input type="text" class="form-control" name="color_stop" value="50">
+                <div class="input-group-btn">
+                <button type="button" class="btn btn-default">
+                  <span class="glyphicon glyphicon-ban-circle"></span>  
+                </button>
+                <button type="button" class="btn btn-default" style="background:red">&nbsp;</button>
+                </div>
+              </div>
+              <div class="input-group">
+                <button type="button" id="bt_add_color_stop" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
+        
+        <!--Main Container-->
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <div id="profile_edit_loading" class="loading-splash">
             Loading...
@@ -82,6 +122,7 @@
             <div class="frame frame-new"></div>
           </div>
         </div>
+        
       </div>
     </div>
 
@@ -91,6 +132,7 @@
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/docs.min.js"></script>
+    <script src="js/jquery.bootstrap-touchspin.min.js"></script>
     <script src="js/rest.js"></script>
     <script src="js/index.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->

@@ -20,6 +20,23 @@ $(function() {
     
   });
   
+  //Spinner init
+  $("input[name='time']").TouchSpin({
+    min: 0,
+    max: 65536,
+    step: 100,
+    maxboostedstep: 1000,
+    postfix: 'ms'
+  });
+  $("input[name='color_stop']").TouchSpin({
+    prefix: "#",
+    min: 0,
+    verticalbuttons: true,
+    verticalupclass: 'glyphicon glyphicon-plus',
+    verticaldownclass: 'glyphicon glyphicon-minus',
+    max: ledCount
+  });
+  
 });
 
 function loadProfilesList() {

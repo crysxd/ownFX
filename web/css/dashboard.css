@@ -38,6 +38,7 @@ body {
 /* Hide for mobile, show later */
 .sidebar {
   display: none;
+  padding: 10px!important;
 }
 @media (min-width: 768px) {
   .sidebar {
@@ -53,6 +54,18 @@ body {
     background-color: #f5f5f5;
     border-right: 1px solid #eee;
   }
+}
+.sidebar .input-group {
+  margin-bottom: 2px;
+}
+#bt_add_color_stop {
+  width: 215px!important;
+}
+.sidebar label {
+  margin-top: 20px;
+}
+.sidebar label:first-of-type {
+  margin-top: 0px;
 }
 
 /* Sidebar navigation */
@@ -94,22 +107,6 @@ body {
 }
 .main .page-header {
   margin-top: 0;
-}
-.header {
-  background-image: url(img/seperator_down.png);
-  position: relative;
-  height: 112px;
-}
-.header>h1 {
-  position: absolute;
-  top: 0;
-  margin: 0;
-  left: 0;
-}
-.header>div {
-  position: absolute;
-  top: 0;
-  right: 0;
 }
 .frame {
   border-radius: 5px;
