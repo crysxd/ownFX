@@ -176,12 +176,13 @@ function appendFrameToProfileConfiguration() {
 
 function updateFrame(index) {
   var frame = curConfiguration.frames[index];
-  var colorStop = frame.colorStops[0];
+  var colorStops = frame.colorStops;
   var frameNode = getFrameNode(index);
   
-  frameNode.css('background-image', createGradientFromColorStops(frame.colorStops));
-  frameNode.html(makeMsReadable(frame.pauseTime));
+  frameNode.attr('data-content', makeMsReadable(frame.pauseTime));
   getFrameConenctorNode(index).attr('data-content', makeMsReadable(frame.transitionTime));
+  
+  applyColorStops(colorStops, frameNode);
 
 }
 
@@ -195,27 +196,44 @@ function getFrameConenctorNode(index) {
   
 }
 
-function makeMsReadable(ms) {
-  return ms/1000 + 's';
-  
-}
+function applyColorStops(colorStops, frameNode) {
+  var gradient = 'linear-gradient(to right, ';
 
-function createGradientFromColorStops(colorStops) {
-  var gradient = 'linear-gradient(to right,';
-  
   if(colorStops.length == 1) {
     colorStops[1] = colorStops[0];
     
   }
   
   $(colorStops).each(function(){
-    gradient += 'rgb(' + this.r + ',' + this.g + ',' + this.b + ') ' + Math.round((this.i / ledCount)*10000)/100 + '%,';
+    var position = Math.round((this.i / ledCount)*10000)/100;
+    gradient += createCssRgb(this.r, this.g, this.b) + ' ' + position + '%,';
+    addColorStop(this.r, this.g, this.b, position, frameNode);
     
   });
   
   gradient = gradient.substr(0, gradient.length-1) + ')';  
-  return gradient;
+  frameNode.css('background-image', gradient);
+
+}
+
+function addColorStop(r, g, b, position, frameNode) {
+  console.log(position);
+  var colorStop = $('<div class="color-stop"></div>');
+  colorStop.append('<div class="color-stop-color"></div>')
+  colorStop.css('left', position + '%');
+  colorStop.children('.color-stop-color').css('background-color', createCssRgb(r, g, b));
   
+  frameNode.append(colorStop);
+  
+}
+
+function makeMsReadable(ms) {
+  return ms/1000 + 's';
+  
+}
+
+function createCssRgb(r, g, b) {
+  return 'rgb(' + r + ',' + g + ',' + b + ')';
 }
 
 function selectFrame(index) {
