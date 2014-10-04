@@ -38,6 +38,7 @@ body {
 /* Hide for mobile, show later */
 .sidebar {
   display: none;
+  position:relative;
 }
 #profiles_list {
   display: none;
@@ -57,6 +58,16 @@ body {
     border-right: 1px solid #eee;
   }
 }
+#sidebar_navigation {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  max-height: 50%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-top: 1px solid #888;
+}
 
 /* Sidebar navigation */
 .nav-sidebar {
@@ -68,7 +79,8 @@ body {
 .nav-icon {
   width:15px;
   text-align: center;
-  margin-right: 12px;
+  margin-right: 10px;
+  margin-left: 10px;
 }
 .nav-sidebar > li > a {
   padding-right: 20px;
