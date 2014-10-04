@@ -7,7 +7,7 @@ var curConfigurationBackup;
 
 $(function() {
   //Load list of all profiles and display them in the sidebar
-  loadProfilesList();
+  //loadProfilesList();
   
   //Add listern to "new frame" button
   $('.frame-new').click(function() {
