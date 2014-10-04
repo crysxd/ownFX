@@ -165,7 +165,12 @@ function appendFrameToProfileConfiguration() {
     
   }
   
+  $('#profile_edit_configuration .frame:eq(' + lastIndex + ')').click(function() {
+    selectFrame(lastIndex);
+  });
+  
   updateFrame(lastIndex);
+  selectFrame(lastIndex);
 
 }
 
@@ -199,4 +204,32 @@ function createGradientFromColorStops(colorStops) {
   gradient = gradient.substr(0, gradient.length-1) + ')';  
   return gradient;
   
+}
+
+function selectFrame(index) {
+  //Remove the ok glyphicon from all and add it to the active profile
+  $('.frame').removeClass('frame-selected');
+  $('.frame:eq(' + index + ')').addClass('frame-selected');
+  
+  //Set values
+  $('#sidebar_title').html('Frame ' + (index + 1));
+  $('#frame_pause_time').val(curConfiguration.frames[index].pauseTime);
+  $('#frame_transition_time').val(curConfiguration.frames[index].transitionTime);
+  
+  //Save changes of pause time
+  $('#frame_pause_time').off('change');
+  $('#frame_pause_time').change(function() {
+    curConfiguration.frames[index].pauseTime = $('#frame_pause_time').val();
+    updateFrame(index);
+    
+  });
+  
+  //Save changes of transition time
+  $('#frame_transition_time').off('change');
+  $('#frame_transition_time').change(function() {
+    curConfiguration.frames[index].transitionTime = $('#frame_transition_time').val();
+    updateFrame(index);
+    
+  });
+
 }

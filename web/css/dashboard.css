@@ -120,6 +120,9 @@ body {
   text-align: center;
   vertical-align: -50%;
 }
+.frame:hover{
+  cursor: pointer;
+}
 .frame-new {
   width: 30px;
   margin-left: auto;
@@ -130,6 +133,9 @@ body {
 .frame-new:hover {
   background-color: #428bca;
   cursor: pointer;
+}
+.frame-selected {
+  box-shadow: 0px 0px 3px 2px #428bca;
 }
 .frame-new:before {
   color:white;
