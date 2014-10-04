@@ -30,32 +30,31 @@ function loadProfilesList() {
       //Transform laoded text in object
       try {
         var json = JSON.parse(result);
-       
-        //Fade the loading animation out
-        $('#profiles_list_loading').fadeOut(function() {
-          //iterate over profiles from json object
-          $(json).each(function(i, e) {
-            //add a list entry for profile
-            $('#profiles_list').append('<li profileid="' + e.id + '"><a href="#"><span class="nav-icon glyphicon"></span>'+ e.name + '</a></li>');
 
-            //check if the current profile is active. if so mark it
-            if(e.active) {
-              setActiveProfile(e.id);
+        $('#profiles_list').html('');
+          
+        //iterate over profiles from json object
+        $(json).each(function(i, e) {
+          //add a list entry for profile
+          $('#profiles_list').append('<li profilename="' + e.name + '" profileid="' + e.id + '"><a href="#"><span class="nav-icon glyphicon"></span>'+ e.name + '</a></li>');
 
-            }
+          //check if the current profile is active. if so mark it
+          if(e.active) {
+            setActiveProfile(e.id);
 
-            //Add click listener to change the displayed project
-            $('#profiles_list li:last').click(function() {
-              showProfile(e.id);
+          }
 
-            });
+          //Add click listener to change the displayed project
+          $('#profiles_list li:last').click(function() {
+            showProfile(e.id);
+
           });
-
-          //fade list in and sho first
-          $('#profiles_list').fadeIn();
-          showProfile(json[0].id);
-
         });
+
+        //fade list in and sho first
+        //$('#profiles_list').fadeIn();
+        showProfile(json[0].id);
+
       } catch(e) {
         console.log(e);
         //Error handling!
@@ -80,8 +79,10 @@ function setActiveProfile(id) {
 
 function showProfile(id) {
   //Update sidebar active entry
+  var entry = $('#profiles_list li[profileid=' + id + ']');
   $('#profiles_list li').removeClass('active');
-  $('#profiles_list li[profileid=' + id + ']').addClass('active');
+  entry.addClass('active');
+  $('#profiles_selected_name').html(entry.attr('profilename'));
   
   $('#profile_edit').fadeOut(function() {
     //Fade Loading animation in

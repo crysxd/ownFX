@@ -38,10 +38,6 @@ body {
 /* Hide for mobile, show later */
 .sidebar {
   display: none;
-  position:relative;
-}
-#profiles_list {
-  display: none;
 }
 @media (min-width: 768px) {
   .sidebar {
@@ -57,35 +53,6 @@ body {
     background-color: #f5f5f5;
     border-right: 1px solid #eee;
   }
-}
-#sidebar_navigation {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  height: 40%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 15px;
-  padding-top: 0;
-  padding-bottom: 0;
-}
-#sidebar_navigation button {
-  position:absolute;
-  bottom: 15px;
-  right: 15px;
-  z-index: 999999;
-}
-#sidebar_configuration {
-  background-image: url(../img/seperator_up.png);
-  background-repeat: no-repeat;
-  background-position: bottom;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 60%;
-  padding: 15px;
 }
 
 /* Sidebar navigation */

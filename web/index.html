@@ -58,17 +58,12 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
-          <div id="sidebar_configuration">
-            <h4 id="profile_edit_name">Profile 1</h4>  
-          </div>
-          <div id="sidebar_navigation">
-             <div id="profiles_list_loading" class="loading-splash">
-              Loading...
-            </div>
-            <ul id="profiles_list" class="nav nav-sidebar">
-              <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button>
-
-            </ul>
+          <div class="btn-group">
+            <button type="button" class="btn btn-default btn-block btn-lg dropdown-toggle" data-toggle="dropdown">
+              <span id="profiles_selected_name">Loading...</span>
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" id="profiles_list" role="menu"></ul>
           </div>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
