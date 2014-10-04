@@ -7,7 +7,7 @@ var curConfigurationBackup;
 
 $(function() {
   //Load list of all profiles and display them in the sidebar
-  //loadProfilesList();
+  loadProfilesList();
   
   //Add listern to "new frame" button
   $('.frame-new').click(function() {
@@ -177,10 +177,22 @@ function appendFrameToProfileConfiguration() {
 function updateFrame(index) {
   var frame = curConfiguration.frames[index];
   var colorStop = frame.colorStops[0];
-  $('#profile_edit_configuration .frame:eq(' + index + ')').css('background-image', createGradientFromColorStops(frame.colorStops));
-  $('#profile_edit_configuration .frame:eq(' + index + ')').html(makeMsReadable(frame.pauseTime));
-  $('#profile_edit_configuration .frame-connector:eq(' + index + ')').attr('data-content', makeMsReadable(frame.transitionTime));
+  var frameNode = getFrameNode(index);
+  
+  frameNode.css('background-image', createGradientFromColorStops(frame.colorStops));
+  frameNode.html(makeMsReadable(frame.pauseTime));
+  getFrameConenctorNode(index).attr('data-content', makeMsReadable(frame.transitionTime));
 
+}
+
+function getFrameNode(index) {
+  return $('#profile_edit_configuration .frame:eq(' + index + ')');
+  
+}
+
+function getFrameConenctorNode(index) {
+  return $('#profile_edit_configuration .frame-connector:eq(' + index + ')');
+  
 }
 
 function makeMsReadable(ms) {
