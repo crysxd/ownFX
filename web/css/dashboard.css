@@ -67,11 +67,14 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   padding: 15px;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 #sidebar_navigation button {
   position:absolute;
-  top: 15px;
+  bottom: 15px;
   right: 15px;
+  z-index: 999999;
 }
 #sidebar_configuration {
   background-image: url(../img/seperator_up.png);
