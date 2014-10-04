@@ -199,6 +199,8 @@ function getFrameConenctorNode(index) {
 function applyColorStops(colorStops, frameNode) {
   var gradient = 'linear-gradient(to right, ';
 
+  frameNode.html('');
+  
   if(colorStops.length == 1) {
     colorStops[1] = colorStops[0];
     
