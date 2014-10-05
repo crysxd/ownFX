@@ -70,6 +70,12 @@ $(function() {
     
   });
   
+    //Save changes of brightness
+  $('#frame_brightness').change(function() {
+    config.frames[selectedFrameIndex].brightness = Math.round($('#frame_brightness').val()/100*255);
+    
+  });
+  
   //Save changes of position
   $('#color_stop_position').change(function() {
     config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex].i =   $('#color_stop_position').val();
@@ -373,7 +379,6 @@ function addColorStopNode(c, position, frameNode, frameIndex, colorStopIndex) {
   colorStop.css('left', position + '%');
   
   //Apply the color
-  console.log('#' + c);
   colorStop.css('background-color', '#' + c);
   
   //Add the color stop div to the frame
@@ -482,6 +487,7 @@ function selectFrame(index) {
   $('#sidebar_frame_title').html('Frame ' + (index + 1));
   $('#frame_pause_time').val(config.frames[index].pauseTime);
   $('#frame_transition_time').val(config.frames[index].transitionTime);
+  $('#frame_brightness').val(Math.round(config.frames[index].brightness/255*100));
   
   //select the alrady selected color stop
   //this causes the sidebar to update and if the user clicked 
