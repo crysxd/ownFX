@@ -50,15 +50,21 @@ $(function() {
   
   //Colorpicker init
   $('#color_stop_color_picker').farbtastic(onColorChanged);
-
+  $('#color_stop_color_edit').change(function() {
+    $.farbtastic('#color_stop_color_picker').setColor(this.val());
+  });
 });
 
 function onColorChanged(color) {
   var colorStop = config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex];
-  var color = hexToRgb(color);
-  colorStop.r = color.r;
-  colorStop.g = color.g;
-  colorStop.b = color.b;
+  var colorRGB = hexToRgb(color);
+  colorStop.r = colorRGB.r;
+  colorStop.g = colorRGB.g;
+  colorStop.b = colorRGB.b;
+  
+  $('#color_stop_color_preview').css('background', color);
+  $('#color_stop_color_edit').val(color.substr(1).toUpperCase());
+  
   updateFrame(selectedFrameIndex);
   
 }
