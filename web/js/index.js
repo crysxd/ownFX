@@ -101,6 +101,25 @@ $(function() {
     updateFrame(selectedFrameIndex);
     
   });
+  
+  //click code for remove color stop button
+  $('#btn_remove_frame').click(function(){
+    //If two or less color stops are available, thats the minimum.
+    //Show error message and return
+    if(config.frames.length <= 1) {
+      alert("A profile must contain at least one frame!");
+      return;
+      
+    }
+    
+    //Remove color stop from array by cutting it out
+    //Will contain the indices in correct order
+    config.frames.splice(selectedFrameIndex, 1 );
+
+    selectedColorStopIndex = 0;
+    applyConfig();
+    
+  });
 });
 
 function onColorChanged(color) {
