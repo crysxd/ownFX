@@ -178,7 +178,6 @@ input {
   display: none;
 }
 .frame .color-stop {
-  z-index: 90000;
   width: 20px;
   height: 20px;
   border-radius: 50%;
