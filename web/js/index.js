@@ -26,6 +26,7 @@ $(function() {
   $(document).mouseup(function() {
       $(document).off('mousemove');
       draggedColorStopIndex = -1;
+      $('*').css('cursor', '');
     
   });
   
@@ -308,7 +309,8 @@ function addColorStopNode(r, g, b, position, frameNode, frameIndex, colorStopInd
   colorStop.mousedown(function() {
     $(document).mousemove(onColorStopNodeDragged);
     draggedColorStopIndex = colorStopIndex;
-    
+    $('*').css('cursor', 'ew-resize');
+
   });
   
 }

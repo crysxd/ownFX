@@ -190,7 +190,7 @@ input {
   position:absolute;
   left: 20%;
   top: 31px;
-  cursor: default;
+  cursor: ew-resize;
   box-shadow: 0px 0px 3px #000;
   margin-left: -10px;
   border: 2px solid #d0d0d0;
