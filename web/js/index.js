@@ -393,7 +393,7 @@ function onColorStopNodeDragged(e) {
   
   //calc min and max x-position
   var halfWidth = colorStopNode.width() / 2;
-  var minx = $(frameNode).offset().left - halfWidth;
+  var minx = frameNode.offset().left - halfWidth;
   var maxx = minx + frameNode.width();
   
   //If the new x would be smaller than the minimum, assume min
@@ -407,8 +407,8 @@ function onColorStopNodeDragged(e) {
   }
   
   //calculate the led number on base of x
-  var ledNumber = Math.round((e.clientX - minx) / (maxx - minx) * maxLedIndex);
-  
+  var ledNumber = calculateLedFromPixles(e.clientX);
+  console.log(ledNumber)
   //Update the LED number
   config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex].i = ledNumber;
   colorStopNode.css('left', e.clientX - minx + 'px');
@@ -416,6 +416,20 @@ function onColorStopNodeDragged(e) {
   $('#color_stop_position').val(config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex].i);
 
 
+}
+
+function calculateLedFromPixles(xPixels) {  
+  //Get Colorstop node and calculate half width
+  var colorStopNode = getColorStopNode(selectedFrameIndex, selectedColorStopIndex);
+  var halfWidth = colorStopNode.width() / 2;
+  
+  //Get Frame Node and Bounds
+  var frameNode = getFrameNode(selectedFrameIndex);
+  var minx = frameNode.offset().left - halfWidth;
+  var maxx = minx + frameNode.width();
+
+  //Calculate the # LED from x
+  return Math.round((xPixels - minx) / (maxx - minx) * maxLedIndex);
 }
 
 function selectColorStop(index) {
