@@ -265,7 +265,7 @@ function appendFrameToProfileConfiguration() {
     
   //Check if frame is in config, if not, create a new empty frame
   if(config.frames[index] === undefined) {
-   config.frames[index] = {pauseTime:0, transitionTime:2000, colorStops:[{i:0, c:"0000FF"}]};
+   config.frames[index] = {pauseTime:0, transitionTime:2000, brightness:255, colorStops:[{i:0, c:"0000FF"}]};
     
   }
   
