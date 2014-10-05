@@ -58,46 +58,18 @@ $(function() {
 
 function onColorChanged(color) {
   var colorStop = config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex];
-  var colorRGB = hexToRgb(color);
-  colorStop.r = colorRGB.r;
-  colorStop.g = colorRGB.g;
-  colorStop.b = colorRGB.b;
-  
+  color = color.substr(1);
+  colorStop.c = color;
   $('#color_stop_color_preview').css('background', color);
-  $('#color_stop_color_edit').val(color.substr(1).toUpperCase());
+  $('#color_stop_color_edit').val(color.toUpperCase());
   
   updateFrame(selectedFrameIndex);
   
 }
 
-function hexToRgb(hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-    } : null;
-}
-
-function componentToHex(c) {
-    var hex = c.toString(16);
-    return hex.length == 1 ? "0" + hex : hex;
-}
-
-
-function rgbToHex(r, g, b) {
-    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
-}
-
 function makeMsReadable(ms) {
   //Convert in secs ans add s
   return ms/1000 + 's';
-  
-}
-
-function createCssRgb(r, g, b) {
-  //Create a CSS rgb function with the given values
-  return 'rgb(' + r + ',' + g + ',' + b + ')';
   
 }
 
@@ -227,7 +199,7 @@ function appendFrameToProfileConfiguration() {
     
   //Check if frame is in config, if not, create a new empty frame
   if(config.frames[index] === undefined) {
-   config.frames[index] = {pauseTime:0, transitionTime:2000, colorStops:[{i:0, r:0, g:0, b:255, a:255}]};
+   config.frames[index] = {pauseTime:0, transitionTime:2000, colorStops:[{i:0, c:"0000FF"}]};
     
   }
   
@@ -239,10 +211,7 @@ function appendFrameToProfileConfiguration() {
       var ledNumber = calculateLedFromPixles(e.clientX);
       config.frames[selectedFrameIndex].colorStops.push({
         i: ledNumber,
-        r: 0,
-        g: 0,
-        b: 255,
-        a: 0
+        c: "0000FF"
       });
 
       updateFrame(selectedFrameIndex);
@@ -350,10 +319,10 @@ function renderColorStops(colorStops, index) {
     var position = Math.round((this.i / maxLedIndex)*10000)/100;
     
     //Add the stop to the gradient followed by a comma
-    gradient += createCssRgb(this.r, this.g, this.b) + ' ' + position + '%,';
+    gradient += '#' + this.c + ' ' + position + '%,';
     
     //A a color stop to the HTML to be modified by the user
-    addColorStopNode(this.r, this.g, this.b, position, frameNode, index, i);
+    addColorStopNode(this.c, position, frameNode, index, i);
     
   });
   
@@ -365,7 +334,7 @@ function renderColorStops(colorStops, index) {
 
 }
 
-function addColorStopNode(r, g, b, position, frameNode, frameIndex, colorStopIndex) {
+function addColorStopNode(c, position, frameNode, frameIndex, colorStopIndex) {
   //Create a color stop node
   var colorStop = $('<div class="color-stop"></div>');
   
@@ -382,7 +351,8 @@ function addColorStopNode(r, g, b, position, frameNode, frameIndex, colorStopInd
   colorStop.css('left', position + '%');
   
   //Apply the color
-  colorStop.css('background-color', createCssRgb(r, g, b));
+  console.log('#' + c);
+  colorStop.css('background-color', '#' + c);
   
   //Add the color stop div to the frame
   frameNode.append(colorStop);
@@ -463,7 +433,7 @@ function selectColorStop(index) {
   var colorStop = config.frames[selectedFrameIndex].colorStops[index];
   $('#sidebar_color_stop_title').html('Color Stop ' + (index + 1));
   $('#color_stop_position').val(config.frames[selectedFrameIndex].colorStops[index].i);
-  $.farbtastic('#color_stop_color_picker').setColor(rgbToHex(colorStop.r, colorStop.g, colorStop.b));
+  $.farbtastic('#color_stop_color_picker').setColor('#' + colorStop.c);
   
   //Update the frame. This will mark the newly selected color stop
   updateFrame(selectedFrameIndex);

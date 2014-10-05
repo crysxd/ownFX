@@ -5,26 +5,29 @@
     {
       "transitionTime":2000,
       "pauseTime":0,
+      "brightness":255,
       "colorStops":[
-        {"i":0, "r":191, "g":0, "b":0, "a":0},
-        {"i":59, "r":209, "g":7, "b":227, "a":0}
+        {"i":0, "c":"BF0000"},
+        {"i":59, "c":"D107E3"}
       ]
     },
     {
       "transitionTime":2000,
       "pauseTime":0,
+      "brightness":255,
       "colorStops":[
-        {"i":0, "r":191, "g":0, "b":0, "a":0},
-        {"i":30, "r":209, "g":7, "b":227, "a":0},
-        {"i":59, "r":191, "g":0, "b":0, "a":0}
+        {"i":0, "c":"BF0000"},
+        {"i":30, "c":"D107E3"},
+        {"i":59, "c":"BF0000"}
       ]
     },
     {
       "transitionTime":2000,
       "pauseTime":0,
+      "brightness":255,
       "colorStops":[
-        {"i":0, "r":209, "g":7, "b":227, "a":0},
-        {"i":59, "r":191, "g":0, "b":0, "a":0}
+        {"i":0, "c":"D107E3"},
+        {"i":59, "c":"BF0000"}
       ]
     }
   ]
