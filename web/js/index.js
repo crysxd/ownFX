@@ -2,6 +2,7 @@ var urlProfilesList = 'rest/profiles_list';
 var urlProfileData = 'rest/profile';
 var maxLedIndex = 59;
 var maxFrameCount = 12;
+var maxColorStopsCount = 10;
 var config;
 var configBackup;
 var selectedFrameIndex;
@@ -231,9 +232,28 @@ function appendFrameToProfileConfiguration() {
   }
   
   //Add a click function to the frame to select it on click
-  frame.mousedown(function() {
+  frame.mousedown(function(e) {
     selectFrame(index);
     
+    if(config.frames[selectedFrameIndex].colorStops.length < maxColorStopsCount) {
+      var ledNumber = calculateLedFromPixles(e.clientX);
+      config.frames[selectedFrameIndex].colorStops.push({
+        i: ledNumber,
+        r: 0,
+        g: 0,
+        b: 255,
+        a: 0
+      });
+
+      updateFrame(selectedFrameIndex);
+      
+    } else {
+      alert('You can not add more than ' + maxColorStopsCount + ' color stops in a frame.');
+      
+    }
+    
+
+
   });
   
   //Update gradient and color stops for the new frame
@@ -376,13 +396,15 @@ function addColorStopNode(r, g, b, position, frameNode, frameIndex, colorStopInd
   frameNode.append(colorStop);
   
   //Add mousedown listener to start drag
-  colorStop.mousedown(function() {
-    console.log('down');
+  colorStop.mousedown(function(e) {
+        console.log('click on color stop');
+
     $(document).mousemove(onColorStopNodeDragged);
     $('*').css('cursor', 'ew-resize');
     
     selectColorStop(colorStopIndex);
 
+    e.stopPropagation();
   });
 }
 
@@ -408,7 +430,7 @@ function onColorStopNodeDragged(e) {
   
   //calculate the led number on base of x
   var ledNumber = calculateLedFromPixles(e.clientX);
-  console.log(ledNumber)
+  
   //Update the LED number
   config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex].i = ledNumber;
   colorStopNode.css('left', e.clientX - minx + 'px');
@@ -430,7 +452,10 @@ function calculateLedFromPixles(xPixels) {
 
   //Calculate the # LED from x
   return Math.round((xPixels - minx) / (maxx - minx) * maxLedIndex);
+  
 }
+
+
 
 function selectColorStop(index) {
   //If index is undefines assume zero
