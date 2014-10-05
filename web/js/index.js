@@ -88,7 +88,7 @@ function onColorChanged(color) {
   var colorStop = config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex];
   color = color.substr(1);
   colorStop.c = color;
-  $('#color_stop_color_preview').css('background', color);
+  $('#color_stop_color_preview').css('background', '#' + color);
   $('#color_stop_color_edit').val(color.toUpperCase());
   
   updateFrame(selectedFrameIndex);
