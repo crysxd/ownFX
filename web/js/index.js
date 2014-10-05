@@ -54,6 +54,28 @@ $(function() {
   $('#color_stop_color_edit').change(function() {
     $.farbtastic('#color_stop_color_picker').setColor(this.val());
   });
+  
+    
+  //Save changes of pause time
+  $('#frame_pause_time').change(function() {
+    config.frames[selectedFrameIndex].pauseTime = $('#frame_pause_time').val();
+    updateFrame(selectedFrameIndex);
+    
+  });
+  
+  //Save changes of transition time
+  $('#frame_transition_time').change(function() {
+    config.frames[selectedFrameIndex].transitionTime = $('#frame_transition_time').val();
+    updateFrame(selectedFrameIndex);
+    
+  });
+  
+  //Save changes of position
+  $('#color_stop_position').change(function() {
+    config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex] =   $('#color_stop_position').val();
+    updateFrame(selectedFrameIndex);
+    
+  });
 });
 
 function onColorChanged(color) {
@@ -438,13 +460,6 @@ function selectColorStop(index) {
   //Update the frame. This will mark the newly selected color stop
   updateFrame(selectedFrameIndex);
 
-  //Save changes of position
-  $('#color_stop_position').off('change');
-  $('#color_stop_position').change(function() {
-    config.frames[selectedFrameIndex].colorStops[index] =   $('#color_stop_position').val();
-    updateFrame(selectedFrameIndex);
-    
-  });
 }
 
 function selectFrame(index) {
@@ -467,22 +482,6 @@ function selectFrame(index) {
   $('#sidebar_frame_title').html('Frame ' + (index + 1));
   $('#frame_pause_time').val(config.frames[index].pauseTime);
   $('#frame_transition_time').val(config.frames[index].transitionTime);
-  
-  //Save changes of pause time
-  $('#frame_pause_time').off('change');
-  $('#frame_pause_time').change(function() {
-    config.frames[index].pauseTime = $('#frame_pause_time').val();
-    updateFrame(index);
-    
-  });
-  
-  //Save changes of transition time
-  $('#frame_transition_time').off('change');
-  $('#frame_transition_time').change(function() {
-    config.frames[index].transitionTime = $('#frame_transition_time').val();
-    updateFrame(index);
-    
-  });
   
   //select the alrady selected color stop
   //this causes the sidebar to update and if the user clicked 
