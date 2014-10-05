@@ -260,7 +260,11 @@ function appendFrameToProfileConfiguration() {
         i: ledNumber,
         c: "0000FF"
       });
+      
+      //select the newly added color stop
+      selectedColorStopIndex =  config.frames[selectedFrameIndex].colorStops.length - 1;
 
+      //Update the frame to show the new color stop
       updateFrame(selectedFrameIndex);
       
     } else {
