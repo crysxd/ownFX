@@ -403,7 +403,8 @@ function addColorStopNode(r, g, b, position, frameNode, frameIndex, colorStopInd
     $('*').css('cursor', 'ew-resize');
     
     selectColorStop(colorStopIndex);
-
+    selectFrame(frameIndex);
+    
     e.stopPropagation();
   });
 }
