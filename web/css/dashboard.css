@@ -30,6 +30,9 @@ input {
   -webkit-user-select: text;
   -moz-user-select: text;
 }
+.popover-content {
+  color:black;
+}
   
 /*
  * Top navigation
@@ -149,8 +152,8 @@ input {
   background-color: #428bca;
   cursor: pointer;
 }
-.frame-selected {
-  box-shadow: 0px 0px 3px 2px #428bca;
+.selected {
+  box-shadow: 0px 0px 3px 2px #428bca !important;
 }
 .frame-new:before {
   color:white;

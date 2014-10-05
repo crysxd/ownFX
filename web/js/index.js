@@ -5,7 +5,7 @@ var maxFrameCount = 12;
 var config;
 var configBackup;
 var selectedFrameIndex;
-var draggedColorStopIndex;
+var selectedColorStopIndex;
 
 $(function() {
   //Load list of all profiles and display them in the sidebar
@@ -25,7 +25,6 @@ $(function() {
   //Add mouseup listener to end drag of color stop
   $(document).mouseup(function() {
       $(document).off('mousemove');
-      draggedColorStopIndex = -1;
       $('*').css('cursor', '');
     
   });
@@ -38,16 +37,62 @@ $(function() {
     maxboostedstep: 1000,
     postfix: 'ms'
   });
-  $("input[name='color_stop']").TouchSpin({
-    prefix: "#",
+  $("input[name='percent']").TouchSpin({
+    postfix: "%",
     min: 0,
-    verticalbuttons: true,
-    verticalupclass: 'glyphicon glyphicon-plus',
-    verticaldownclass: 'glyphicon glyphicon-minus',
+    max: 100
+  });
+    $("input[name='position']").TouchSpin({
+    prefix: "LED #",
+    min: 0,
     max: ledCount
   });
   
+  //Colorpicker init
+  $('#color_stop_color_picker').farbtastic(onColorChanged);
+
 });
+
+function onColorChanged(color) {
+  var colorStop = config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex];
+  var color = hexToRgb(color);
+  colorStop.r = color.r;
+  colorStop.g = color.g;
+  colorStop.b = color.b;
+  updateFrame(selectedFrameIndex);
+  
+}
+
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+}
+
+function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
+
+function rgbToHex(r, g, b) {
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
+function makeMsReadable(ms) {
+  //Convert in secs ans add s
+  return ms/1000 + 's';
+  
+}
+
+function createCssRgb(r, g, b) {
+  //Create a CSS rgb function with the given values
+  return 'rgb(' + r + ',' + g + ',' + b + ')';
+  
+}
 
 function loadProfilesList() {
   //load URL and go on in callback
@@ -187,10 +232,12 @@ function appendFrameToProfileConfiguration() {
   
   //Update gradient and color stops for the new frame
   updateFrame(index);
+
+  //Select the first color stop, because the not existent colot stop x could be selected
+  selectedColorStopIndex = 0;
   
   //Select the new Frame
   selectFrame(index);
-
 }
 
 function updateFrame(index) {
@@ -239,29 +286,37 @@ function renderColorStops(colorStops, index) {
     
   }
   
+  //Iterate over color stops
   $(colorStops).each(function(i, e) {
+    //if i is the last color stop, break
     if(i == colorStops.length-1)
       return;
     
+    //If i and i+1 are located at the same LED
     if(e.i == colorStops[i+1].i) {
-      if(i == draggedColorStopIndex) {
+      //if the i is the selected color stop (which is aktually dragged by the user), move it over the other color stop
+      if(i == selectedColorStopIndex) {
         e.i++;
 
-      } else if(i+1 == draggedColorStopIndex) {
+      //if the i+1 is the selected color stop (which is aktually dragged by the user), move it over the other color stop
+      } else if(i+1 == selectedColorStopIndex) {
          colorStops[i+1].i--;
 
       }
     }
     
+    //if i is located after i+1, swapp them
     if(e.i > colorStops[i+1].i) {
+      //Swapp
       colorStops[i] = colorStops[i+1];
       colorStops[i+1] = e;
       
-      if(i == draggedColorStopIndex) {
-        draggedColorStopIndex=i+1
+      //If i is the selected color stop, now i+1 must be selected and other wise round
+      if(i == selectedColorStopIndex) {
+        selectedColorStopIndex=i+1
       
-      } else if(i+1 == draggedColorStopIndex) {
-         draggedColorStopIndex = i;
+      } else if(i+1 == selectedColorStopIndex) {
+         selectedColorStopIndex = i;
         
       }
     }  
@@ -296,6 +351,15 @@ function addColorStopNode(r, g, b, position, frameNode, frameIndex, colorStopInd
   //Create a color stop node
   var colorStop = $('<div class="color-stop"></div>');
   
+  //If the color stop is the selected one (frame and color stop must match)
+  if(colorStopIndex == selectedColorStopIndex && frameIndex == selectedFrameIndex) {
+    //remove the selected class from all color stops
+    $('.color-stop').removeClass('selected');
+    //Add it to the new one
+    colorStop.addClass('selected');
+
+  }
+  
   //set its position in percent from the left
   colorStop.css('left', position + '%');
   
@@ -307,78 +371,92 @@ function addColorStopNode(r, g, b, position, frameNode, frameIndex, colorStopInd
   
   //Add mousedown listener to start drag
   colorStop.mousedown(function() {
+    console.log('down');
     $(document).mousemove(onColorStopNodeDragged);
-    draggedColorStopIndex = colorStopIndex;
     $('*').css('cursor', 'ew-resize');
+    
+    selectColorStop(colorStopIndex);
 
   });
-  
-  colorStop.mouseup(function() {
-    colorStop.popover({
-      placement: 'bottom',
-      content: 'Hallo Welt', 
-      html:true, 
-    });
-  });
-  
 }
 
 function onColorStopNodeDragged(e) {
-  if(draggedColorStopIndex < 0) {
-    return;
-    
-  }
-  
   //Save nodes
   var frameNode = getFrameNode(selectedFrameIndex);
-  var colorStopNode = getColorStopNode(selectedFrameIndex, draggedColorStopIndex);
+  var colorStopNode = getColorStopNode(selectedFrameIndex, selectedColorStopIndex);
   
   //calc min and max x-position
   var halfWidth = colorStopNode.width() / 2;
   var minx = $(frameNode).offset().left - halfWidth;
   var maxx = minx + frameNode.width();
   
+  //If the new x would be smaller than the minimum, assume min
   if(e.clientX < minx) {
     e.clientX = minx;
     
+  //If the new x would be bigger than the maximum, assume mac
   } else if(e.clientX > maxx) {
     e.clientX = maxx;
     
   }
   
+  //calculate the led number on base of x
   var ledNumber = Math.round((e.clientX - minx) / (maxx - minx) * ledCount);
   
-  config.frames[selectedFrameIndex].colorStops[draggedColorStopIndex].i = ledNumber;
+  //Update the LED number
+  config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex].i = ledNumber;
   colorStopNode.css('left', e.clientX - minx + 'px');
   updateFrame(selectedFrameIndex);
-  
+  $('#color_stop_position').val(config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex].i);
+
 
 }
 
-function makeMsReadable(ms) {
-  //Convert in secs ans add s
-  return ms/1000 + 's';
+function selectColorStop(index) {
+  //If index is undefines assume zero
+  if(index == undefined) {
+    index = 0;
+  }
   
-}
+  //Save index
+  selectedColorStopIndex = index;
+  
+  //Set values
+  var colorStop = config.frames[selectedFrameIndex].colorStops[index];
+  $('#sidebar_color_stop_title').html('Color Stop ' + (index + 1));
+  $('#color_stop_position').val(config.frames[selectedFrameIndex].colorStops[index].i);
+  $.farbtastic('#color_stop_color_picker').setColor(rgbToHex(colorStop.r, colorStop.g, colorStop.b));
+  
+  //Update the frame. This will mark the newly selected color stop
+  updateFrame(selectedFrameIndex);
 
-function createCssRgb(r, g, b) {
-  //Create a CSS rgb function with the given values
-  return 'rgb(' + r + ',' + g + ',' + b + ')';
-  
+  //Save changes of position
+  $('#color_stop_position').off('change');
+  $('#color_stop_position').change(function() {
+    config.frames[selectedFrameIndex].colorStops[index] =   $('#color_stop_position').val();
+    updateFrame(selectedFrameIndex);
+    
+  });
 }
 
 function selectFrame(index) {
+  //Cancel if frame is already selected
+  if(selectedFrameIndex == index) {
+    return;
+    
+  }
+  
   //Save index
   selectedFrameIndex = index;
   
   //Remove the frame-selected class from all frames 
-  $('.frame').removeClass('frame-selected');
+  $('.frame').removeClass('selected');
   
   //Add it to the newly selected one
-  getFrameNode(index).addClass('frame-selected');
+  getFrameNode(index).addClass('selected');
   
   //Set values
-  $('#sidebar_title').html('Frame ' + (index + 1));
+  $('#sidebar_frame_title').html('Frame ' + (index + 1));
   $('#frame_pause_time').val(config.frames[index].pauseTime);
   $('#frame_transition_time').val(config.frames[index].transitionTime);
   
@@ -397,5 +475,11 @@ function selectFrame(index) {
     updateFrame(index);
     
   });
-
+  
+  //select the alrady selected color stop
+  //this causes the sidebar to update and if the user clicked 
+  //directly on a colorstop instead of the frame the color stop
+  //will stay selected
+  selectColorStop(selectedColorStopIndex);
+  
 }
