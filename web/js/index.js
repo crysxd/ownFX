@@ -82,6 +82,25 @@ $(function() {
     updateFrame(selectedFrameIndex);
     
   });
+  
+  //click code for remove color stop button
+  $('#btn_remove_color_stop').click(function(){
+    //If two or less color stops are available, thats the minimum.
+    //Show error message and return
+    if(config.frames[selectedFrameIndex].colorStops.length <= 2) {
+      alert("A frame must contain at least two color stop!");
+      return;
+      
+    }
+    
+    //Remove color stop from array by cutting it out
+    //Will contain the indices in correct order
+    config.frames[selectedFrameIndex].colorStops.splice(selectedColorStopIndex, 1 );
+
+    selectedColorStopIndex = 0;
+    updateFrame(selectedFrameIndex);
+    
+  });
 });
 
 function onColorChanged(color) {
