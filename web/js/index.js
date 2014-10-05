@@ -1,6 +1,6 @@
 var urlProfilesList = 'rest/profiles_list';
 var urlProfileData = 'rest/profile';
-var ledCount = 60;
+var maxLedIndex = 59;
 var maxFrameCount = 12;
 var config;
 var configBackup;
@@ -45,7 +45,7 @@ $(function() {
     $("input[name='position']").TouchSpin({
     prefix: "LED #",
     min: 0,
-    max: ledCount
+    max: maxLedIndex
   });
   
   //Colorpicker init
@@ -288,7 +288,7 @@ function renderColorStops(colorStops, index) {
   if(colorStops.length == 1) {
     colorStops[1] = JSON.parse(JSON.stringify(colorStops[0]));
     colorStops[0].i = 0;
-    colorStops[1].i = ledCount;
+    colorStops[1].i = maxLedIndex;
     
   }
   
@@ -335,7 +335,7 @@ function renderColorStops(colorStops, index) {
   $(colorStops).each(function(i){
     //Calculate the position for the HTML elements and the CSS gradient
     //% with two digits 
-    var position = Math.round((this.i / ledCount)*10000)/100;
+    var position = Math.round((this.i / maxLedIndex)*10000)/100;
     
     //Add the stop to the gradient followed by a comma
     gradient += createCssRgb(this.r, this.g, this.b) + ' ' + position + '%,';
@@ -407,7 +407,7 @@ function onColorStopNodeDragged(e) {
   }
   
   //calculate the led number on base of x
-  var ledNumber = Math.round((e.clientX - minx) / (maxx - minx) * ledCount);
+  var ledNumber = Math.round((e.clientX - minx) / (maxx - minx) * maxLedIndex);
   
   //Update the LED number
   config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex].i = ledNumber;
