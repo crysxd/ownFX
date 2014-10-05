@@ -72,7 +72,7 @@ $(function() {
   
   //Save changes of position
   $('#color_stop_position').change(function() {
-    config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex] =   $('#color_stop_position').val();
+    config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex].i =   $('#color_stop_position').val();
     updateFrame(selectedFrameIndex);
     
   });
