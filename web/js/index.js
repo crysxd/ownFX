@@ -312,40 +312,32 @@ function renderColorStops(colorStops, index) {
     
   }
   
-  //Iterate over color stops
+  //Sort color stops by led number (e.i) Bubble sort
   $(colorStops).each(function(i, e) {
-    //if i is the last color stop, break
-    if(i == colorStops.length-1)
-      return;
     
-    //If i and i+1 are located at the same LED
-    if(e.i == colorStops[i+1].i) {
-      //if the i is the selected color stop (which is aktually dragged by the user), move it over the other color stop
-      if(i == selectedColorStopIndex) {
-        e.i++;
-
-      //if the i+1 is the selected color stop (which is aktually dragged by the user), move it over the other color stop
-      } else if(i+1 == selectedColorStopIndex) {
-         colorStops[i+1].i--;
-
-      }
-    }
     
-    //if i is located after i+1, swapp them
-    if(e.i > colorStops[i+1].i) {
-      //Swapp
-      colorStops[i] = colorStops[i+1];
-      colorStops[i+1] = e;
+    $(colorStops).each(function(j, e) {
+      //if j is the last color stop, break
+      if(j == colorStops.length-1)
+        return;
       
-      //If i is the selected color stop, now i+1 must be selected and other wise round
-      if(i == selectedColorStopIndex) {
-        selectedColorStopIndex=i+1
-      
-      } else if(i+1 == selectedColorStopIndex) {
-         selectedColorStopIndex = i;
-        
-      }
-    }  
+      //if j is located after j+1, swapp them
+      if(e.i > colorStops[j+1].i) {
+        //Swapp
+        colorStops[j] = colorStops[j+1];
+        colorStops[j+1] = e;
+
+        //Swapp selectedColorIndex, if one of the swapped is selected
+        //If j is the selected color stop, now j+1 must be selected and other wise round
+        if(j == selectedColorStopIndex) {
+          selectedColorStopIndex=j+1
+
+        } else if(j+1 == selectedColorStopIndex) {
+           selectedColorStopIndex = j;
+
+        }
+      }  
+    });
   });
   
   //Start to build a CSS gradient
