@@ -313,6 +313,14 @@ function addColorStopNode(r, g, b, position, frameNode, frameIndex, colorStopInd
 
   });
   
+  colorStop.mouseup(function() {
+    colorStop.popover({
+      placement: 'bottom',
+      content: 'Hallo Welt', 
+      html:true, 
+    });
+  });
+  
 }
 
 function onColorStopNodeDragged(e) {
