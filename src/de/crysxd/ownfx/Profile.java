@@ -9,8 +9,6 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Vector;
 
-import com.google.gson.GsonBuilder;
-
 public class Profile {
 	
 	private String name;
@@ -47,10 +45,7 @@ public class Profile {
 	}
 	
 	public static Profile readProfile(String json) {
-		GsonBuilder gsonBuilder = new GsonBuilder();
-		gsonBuilder.registerTypeAdapter(ColorStop.class, new ColorStop.JsonDeserializer());
-		
-		return gsonBuilder.create().fromJson(json, Profile.class);
+		return GsonSupport.createGson().fromJson(json, Profile.class);
 		
 	}
 	
