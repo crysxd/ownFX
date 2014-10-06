@@ -114,6 +114,15 @@ $(function() {
     applyConfig();
     
   });
+  
+  //click listener for btn_undo_changes
+  $('#btn_undo_changes').click(function() {
+    if(confirm('Do you really want to dismiss all changes you\'ve made to this profile?')) {
+      config = JSON.parse(JSON.stringify(configBackup));
+      applyConfig();
+      
+    }
+  });
 });
 
 function onColorChanged(color) {
