@@ -1,5 +1,5 @@
 var urlProfilesList = 'rest/profiles_list';
-var urlProfileData = 'rest/profile';
+var urlProfileData = 'rest/profile?id=';
 var maxLedIndex = 59;
 var maxFrameCount = 12;
 var maxColorStopsCount = 10;
@@ -205,7 +205,7 @@ function showProfile(id) {
     //Fade Loading animation in
     $('#profile_edit_loading').fadeIn(function() {
       //Load information about profile from server, continue in callback
-      loadURLAsync(urlProfileData, function(state, result) {
+      loadURLAsync(urlProfileData + id, function(state, result) {
         //If successfull
         if(state == 200) {
           //Transform laoded text in object
