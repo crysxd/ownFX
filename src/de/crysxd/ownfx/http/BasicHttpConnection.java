@@ -8,6 +8,9 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
+import de.crysxd.ownfx.http.core.BasicHttpRequest;
+import de.crysxd.ownfx.http.core.Header;
+
 /**
  * Implementierung einer einfachen HTTP-Verbindung.
  * @author chrwuer

@@ -5,6 +5,10 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
+import de.crysxd.ownfx.http.core.BasicHeader;
+import de.crysxd.ownfx.http.core.BasicHttpRequest;
+import de.crysxd.ownfx.http.core.BasicHttpResponse;
+
 public abstract class StreamHttpRequestHandler implements HttpRequestHandler {
 
 	@Override

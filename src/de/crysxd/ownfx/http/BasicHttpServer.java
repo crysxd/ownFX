@@ -23,6 +23,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import de.crysxd.ownfx.http.core.BasicHeader;
+import de.crysxd.ownfx.http.core.BasicHttpRequest;
+import de.crysxd.ownfx.http.core.BasicHttpResponse;
+import de.crysxd.ownfx.http.core.BasicStatusLine;
+import de.crysxd.ownfx.http.core.RequestLine;
+
 /**
  * Einfache Implementierung eines HTTP-Servers.
  * @author chrwuer

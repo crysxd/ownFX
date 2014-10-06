@@ -2,6 +2,8 @@ package de.crysxd.ownfx.http;
 
 import java.io.InputStream;
 
+import de.crysxd.ownfx.webpage.WebpageResourceProvider;
+
 
 /**
  * Ein spezieller {@link StreamHttpRequestHandler}, der versucht die URI in {@link WebpageResourceProvider} zu finden.

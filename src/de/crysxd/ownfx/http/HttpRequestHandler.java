@@ -4,6 +4,9 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
 
+import de.crysxd.ownfx.http.core.BasicHttpRequest;
+import de.crysxd.ownfx.http.core.BasicHttpResponse;
+
 /**
  * Interface um {@link BasicHttpRequest} Objekte zu behandeln
  * @author chrwuer

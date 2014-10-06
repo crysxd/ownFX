@@ -2,6 +2,8 @@ package de.crysxd.ownfx.http;
 
 import java.io.OutputStream;
 
+import de.crysxd.ownfx.http.core.BasicHttpRequest;
+
 /**
  * Interface für einen HttpServer.
  * @author chrwuer

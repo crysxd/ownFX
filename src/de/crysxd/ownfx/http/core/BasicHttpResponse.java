@@ -118,6 +118,12 @@ public class BasicHttpResponse extends HttpTransmission implements HttpResponse 
 		
 	}
 	
+	public void close() throws IOException {
+		this.getOutputStream().flush();
+		this.getOutputStream().close();
+		
+	}
+	
 	/**
 	 * Ein spzieller {@link OutputStream}, der vor derm schreiben überprüft, ob der Header bereits gesendet wurde und eine
 	 * Fehlermeldung wirft, wenn dies nicht der Fall ist.

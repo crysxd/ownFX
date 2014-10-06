@@ -2,6 +2,9 @@ package de.crysxd.ownfx.http;
 
 import java.net.URL;
 
+import de.crysxd.ownfx.http.core.BasicHttpRequest;
+import de.crysxd.ownfx.http.core.BasicHttpResponse;
+
 /**
  * Ein spezieller Handler, der immer eine 404 Seite sendet.
  * @author chrwuer
