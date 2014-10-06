@@ -7,6 +7,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
 
 public class ColorStop {
 
@@ -31,7 +32,7 @@ public class ColorStop {
 
 
 	public static class JsonDeserializer implements com.google.gson.JsonDeserializer<ColorStop> {
-		
+
 		@Override
 		public ColorStop deserialize(JsonElement element, Type type,
 				JsonDeserializationContext context) throws JsonParseException {
@@ -47,6 +48,23 @@ public class ColorStop {
 			c.setColor(Color.decode(colorElement.getAsString()));
 
 			return c;
+			
+		}
+	}
+
+
+	public static class JsonSerializer implements com.google.gson.JsonSerializer<ColorStop> {
+
+		@Override
+		public JsonElement serialize(ColorStop cs, Type type,
+				JsonSerializationContext context) {
+			
+			JsonObject json = new JsonObject();
+			json.addProperty("color", "#" + Integer.toHexString(cs.getColor().getRGB()).substring(2));
+			json.addProperty("ledIndex", cs.getLedIndex());
+
+			return json;
+			
 		}
 	}
 }
