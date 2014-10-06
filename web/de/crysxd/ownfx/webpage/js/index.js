@@ -78,7 +78,7 @@ $(function() {
   
   //Save changes of position
   $('#color_stop_position').change(function() {
-    config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex].i =   $('#color_stop_position').val();
+    config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex].ledIndex =   $('#color_stop_position').val();
     updateFrame(selectedFrameIndex);
     
   });
@@ -124,10 +124,9 @@ $(function() {
 
 function onColorChanged(color) {
   var colorStop = config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex];
-  color = color.substr(1);
-  colorStop.c = color;
-  $('#color_stop_color_preview').css('background', '#' + color);
-  $('#color_stop_color_edit').val(color.toUpperCase());
+  colorStop.color = color;
+  $('#color_stop_color_preview').css('background', color);
+  $('#color_stop_color_edit').val(color.toUpperCase().substr(1));
   
   updateFrame(selectedFrameIndex);
   
@@ -346,12 +345,12 @@ function renderColorStops(colorStops, index) {
   //Set the first to the first LED and the second to the last LED
   if(colorStops.length == 1) {
     colorStops[1] = JSON.parse(JSON.stringify(colorStops[0]));
-    colorStops[0].i = 0;
-    colorStops[1].i = maxLedIndex;
+    colorStops[0].ledIndex = 0;
+    colorStops[1].ledIndex = maxLedIndex;
     
   }
   
-  //Sort color stops by led number (e.i) Bubble sort
+  //Sort color stops by led number (e.ledIndex) Bubble sort
   $(colorStops).each(function(i, e) {
     
     
@@ -361,7 +360,7 @@ function renderColorStops(colorStops, index) {
         return;
       
       //if j is located after j+1, swapp them
-      if(e.i > colorStops[j+1].i) {
+      if(e.ledIndex > colorStops[j+1].ledIndex) {
         //Swapp
         colorStops[j] = colorStops[j+1];
         colorStops[j+1] = e;
@@ -386,13 +385,13 @@ function renderColorStops(colorStops, index) {
   $(colorStops).each(function(i){
     //Calculate the position for the HTML elements and the CSS gradient
     //% with two digits 
-    var position = Math.round((this.i / maxLedIndex)*10000)/100;
+    var position = Math.round((this.ledIndex / maxLedIndex)*10000)/100;
     
     //Add the stop to the gradient followed by a comma
-    gradient += '#' + this.c + ' ' + position + '%,';
+    gradient += this.color + ' ' + position + '%,';
     
     //A a color stop to the HTML to be modified by the user
-    addColorStopNode(this.c, position, frameNode, index, i);
+    addColorStopNode(this.color, position, frameNode, index, i);
     
   });
   
@@ -404,7 +403,7 @@ function renderColorStops(colorStops, index) {
 
 }
 
-function addColorStopNode(c, position, frameNode, frameIndex, colorStopIndex) {
+function addColorStopNode(color, position, frameNode, frameIndex, colorStopIndex) {
   //Create a color stop node
   var colorStop = $('<div class="color-stop"></div>');
   
@@ -421,7 +420,7 @@ function addColorStopNode(c, position, frameNode, frameIndex, colorStopIndex) {
   colorStop.css('left', position + '%');
   
   //Apply the color
-  colorStop.css('background-color', '#' + c);
+  colorStop.css('background-color', color);
   
   //Add the color stop div to the frame
   frameNode.append(colorStop);
@@ -464,10 +463,10 @@ function onColorStopNodeDragged(e) {
   var ledNumber = calculateLedFromPixles(e.clientX);
   
   //Update the LED number
-  config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex].i = ledNumber;
+  config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex].ledIndex = ledNumber;
   colorStopNode.css('left', e.clientX - minx + 'px');
   updateFrame(selectedFrameIndex);
-  $('#color_stop_position').val(config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex].i);
+  $('#color_stop_position').val(config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex].ledIndex);
 
 
 }
@@ -501,8 +500,8 @@ function selectColorStop(index) {
   //Set values
   var colorStop = config.frames[selectedFrameIndex].colorStops[index];
   $('#sidebar_color_stop_title').html('Color Stop ' + (index + 1));
-  $('#color_stop_position').val(config.frames[selectedFrameIndex].colorStops[index].i);
-  $.farbtastic('#color_stop_color_picker').setColor('#' + colorStop.c);
+  $('#color_stop_position').val(config.frames[selectedFrameIndex].colorStops[index].ledIndex);
+  $.farbtastic('#color_stop_color_picker').setColor(colorStop.color);
   
   //Update the frame. This will mark the newly selected color stop
   updateFrame(selectedFrameIndex);
