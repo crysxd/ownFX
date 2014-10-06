@@ -11,5 +11,4 @@ public class WebpageResourceProvider implements ResourceProvider {
 		return this.getClass().getResourceAsStream(name);
 		
 	}
-
 }
