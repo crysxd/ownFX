@@ -1,33 +1,30 @@
 {
   "id":0,
-  "name":"Profile 1",
+  "name":"Rainbow",
   "frames":[
     {
       "transitionTime":2000,
       "pauseTime":0,
-      "brightness":255,
       "colorStops":[
-        {"i":0, "c":"BF0000"},
-        {"i":59, "c":"D107E3"}
+        {"ledIndex":0, "color":"#BF0000"},
+        {"ledIndex":59, "color":"#D107E3"}
       ]
     },
     {
       "transitionTime":2000,
       "pauseTime":0,
-      "brightness":255,
       "colorStops":[
-        {"i":0, "c":"BF0000"},
-        {"i":30, "c":"D107E3"},
-        {"i":59, "c":"BF0000"}
+        {"ledIndex":0, "color":"#BF0000"},
+        {"ledIndex":30, "color":"#D107E3"},
+        {"ledIndex":59, "color":"#BF0000"}
       ]
     },
     {
       "transitionTime":2000,
       "pauseTime":0,
-      "brightness":255,
       "colorStops":[
-        {"i":0, "c":"D107E3"},
-        {"i":59, "c":"BF0000"}
+        {"ledIndex":0, "color":"#D107E3"},
+        {"ledIndex":59, "color":"#BF0000"}
       ]
     }
   ]

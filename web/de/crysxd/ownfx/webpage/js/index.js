@@ -269,8 +269,8 @@ function appendFrameToProfileConfiguration() {
     if(config.frames[selectedFrameIndex].colorStops.length < maxColorStopsCount) {
       var ledNumber = calculateLedFromPixles(e.clientX);
       config.frames[selectedFrameIndex].colorStops.push({
-        i: ledNumber,
-        c: "0000FF"
+        ledIndex: ledNumber,
+        color: "#0000FF"
       });
       
       //select the newly added color stop
