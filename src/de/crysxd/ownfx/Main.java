@@ -12,7 +12,8 @@ public class Main {
 		
 		HttpServer s = new BasicHttpServer(80);
 		s.addHandler(new ResourceHttpRequestHandler(webpage), 100);
-		
+		s.addHandler(new ProfileManager(), 101);
+
 		try {
 			s.startServer();
 			System.out.println("Server started!");
