@@ -40,7 +40,7 @@ public class ProfileManager extends AbstractHandler {
 
 	//The ID of the current activated profile
 	//FIXME: Request from board on startup
-	private int activeProfileId = -1;
+	private int activeProfileId = 0;
 
 	//The list of all available projects
 	private final List<Profile> PROFILES = new Vector<>();
