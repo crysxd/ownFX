@@ -166,8 +166,10 @@ public class ProfileManager extends AbstractHandler {
 		if(files == null || files.length == 0)
 			return "";
 		
+		long id = System.currentTimeMillis();
 		for(File f: files) {
 			Profile p = Profile.readProfile(f);
+			p.setId(id++);
 			this.PROFILES.add(p);
 			this.saveProfile(p, false);
 			
