@@ -1,6 +1,8 @@
 package de.crysxd.ownfx;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +54,7 @@ public class ProfileManager extends AbstractHandler {
 		}		
 	}
 	
-	private Profile getProfile(int id) {
+	private synchronized Profile getProfile(int id) {
 		for(Profile p: this.PROFILES) {
 			if(p.getId() == id) {
 				return p;
@@ -62,6 +64,15 @@ public class ProfileManager extends AbstractHandler {
 		
 		return null;
 		
+	}
+	
+	private synchronized void setProfile(Profile p) {
+		for(int i=0; i<this.PROFILES.size(); i++) {
+			if(this.PROFILES.get(i).getId() == p.getId()) {
+				this.PROFILES.set(i, p);
+				
+			}			
+		}
 	}
 
 	@Override
@@ -84,11 +95,7 @@ public class ProfileManager extends AbstractHandler {
 
 		} else if(target.equals(this.URL_SAVE_PROFILES)) {
 			Profile p = Profile.readProfile(baseRequest.getParameter("profile"));
-			boolean apply = false;
-			try {
-				apply = Boolean.valueOf(baseRequest.getParameter("apply"));
-				
-			} catch(Exception e) {}
+			boolean apply = Boolean.valueOf(baseRequest.getParameter("apply"));
 			
 			answer = this.saveProfile(p, apply);
 			
@@ -126,9 +133,23 @@ public class ProfileManager extends AbstractHandler {
 		
 	}
 	
-	private String saveProfile(Profile p, boolean apply) {
+	private String saveProfile(Profile p, boolean apply) throws IOException {
 		System.out.println(p);
-		return null;
+		System.out.println(apply);
+		this.writeProfile(p);
+		
+		return "";
+		
+	}
+	
+	private void writeProfile(Profile p) throws IOException {
+		this.setProfile(p);
+		String name = p.getId() + ".json";
+		File target = new File(this.PROFILE_SAVE_LOCATION, name);
+		
+		BufferedWriter bw = new BufferedWriter(new FileWriter(target));
+		bw.write(GsonSupport.createGson().toJson(p));
+		bw.close();
 		
 	}
 }

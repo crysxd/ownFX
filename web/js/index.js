@@ -1,5 +1,6 @@
 var urlProfilesList = 'rest/profiles_list';
 var urlProfileData = 'rest/profile?id=';
+var urlProfileSave = 'rest/save';
 var maxLedIndex = 59;
 var maxFrameCount = 12;
 var maxColorStopsCount = 10;
@@ -123,7 +124,25 @@ $(function() {
       
     }
   });
+  
+   //click listener for btn_save
+  $('#btn_save').click(function() {
+    saveProfile(this);
+  });
+  
+   //click listener for btn_activate
+  $('#btn_activate').click(function() {
+    saveProfile(this, true);
+    
+  });
 });
+
+function saveProfile(button, apply) {
+  apply = apply != false && apply != undefined;
+  var post = 'profile=' + JSON.stringify(config) + '&apply=' + apply;
+  loadURLAsync(urlProfileSave, function() {}, post);
+  
+}
 
 function onColorChanged(color) {
   var colorStop = config.frames[selectedFrameIndex].colorStops[selectedColorStopIndex];
