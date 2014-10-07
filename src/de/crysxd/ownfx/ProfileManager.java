@@ -204,6 +204,9 @@ public class ProfileManager extends AbstractHandler {
 		System.out.println(apply);
 		this.writeProfile(p);
 		
+		this.PROFILES.remove(this.getProfile(p.getId()));
+		this.PROFILES.add(p);
+		
 		if(apply) {
 			//FIXME Apply project
 			
