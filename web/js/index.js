@@ -261,7 +261,7 @@ function loadProfilesList() {
 function setActiveProfile(id) {
   //Remove the ok glyphicon from all and add it to the active profile
   $('#profiles_list li>a>span').removeClass('glyphicon-cloud');
-  $('#profiles_list li[profileid=' + id + ']>a>span').addClass('glyphicon-cloud');
+  $('#profiles_list li[profileid=' + id + ']>a>.nav-icon').addClass('glyphicon-cloud');
 
 }
 
