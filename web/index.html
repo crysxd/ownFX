@@ -50,15 +50,24 @@
             <li><a href="#">Help</a></li>
           </ul>
           <form class="navbar-form navbar-right" role="search">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+              <span id="profiles_selected_name">Loading...</span>
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" id="profiles_list" role="menu"></ul>
+          </form>
+          <form class="navbar-form navbar-right" role="search">
             <div class="btn-group">
               <button type="button" class="btn btn-default" id="btn_activate"><span class="glyphicon glyphicon-cloud-upload"></span></button>
-              <button type="button" class="btn btn-default" id="btn_save"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+              <button type="button" class="btn btn-default" id="btn_save"><span class="glyphicon glyphicon-floppy-disk"></span></button>    
+            </div>
+          </form>   
+          <form class="navbar-form navbar-right" role="search">
+            <div class="btn-group">
+              <button type="button" class="btn btn-default" id="btn_rename"><span class="glyphicon glyphicon-pencil"></span></button>
+              <button type="button" class="btn btn-default" id="btn_export"><span class="glyphicon glyphicon-export"></span></button>
               <button type="button" class="btn btn-default" id="btn_undo_changes"><span class="glyphicon glyphicon-thumbs-down"></span></button>
-              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                <span id="profiles_selected_name">Loading...</span>
-                <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu" id="profiles_list" role="menu"></ul>
+              <button type="button" class="btn btn-default" id="btn_delete"><span class="glyphicon glyphicon-ban-circle"></span></button>          
             </div>
           </form>   
         </div>
@@ -70,19 +79,13 @@
         
         <!--Sidebar -->
         <div class="col-sm-3 col-md-2 sidebar">
-          <!-- Profile Dropdown --> 
           <h3 id="sidebar_frame_title">Frame X</h3>
-          <div class="sidebar_content">
-            <!--Spinner Pause and Transition time -->
-            <div class="form-group">
-              <label for="time">Pause Time</label>
-              <input id="frame_pause_time" type="text" value="0" name="time">
-              <label for="time">Transition Time</label>
-              <input id="frame_transition_time" type="text" value="0" name="time">
-              <label for="delete">Remove Frame</label>
-              <button type="button" id="btn_remove_frame"class="btn btn-danger btn-block"><span class="glyphicon glyphicon-ban-circle"></span></button>
-            </div>
-          </div>
+          <label for="time">Pause Time</label>
+          <input id="frame_pause_time" type="text" value="0" name="time">
+          <label for="time">Transition Time</label>
+          <input id="frame_transition_time" type="text" value="0" name="time">
+          <label for="delete">Remove Frame</label>
+          <button type="button" id="btn_remove_frame"class="btn btn-danger btn-block"><span class="glyphicon glyphicon-ban-circle"></span></button>
           <hr>   
           <h3 id="sidebar_color_stop_title">Color Stop X</h3>
           <label for="time">Position</label>

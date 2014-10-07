@@ -27,8 +27,11 @@ public class ProfileManager extends AbstractHandler {
 	//The URL on which a overview over all profiles can be requested
 	private final String URL_GET_PROFILES_LIST = "/rest/profiles_list";
 
+	//The URL on which a profile can be deleted
+	private final String URL_DELETE_PROFILE = "/rest/delete";
+	
 	//The URL on which a profile can be saved
-	private final String URL_SAVE_PROFILES = "/rest/save";
+	private final String URL_SAVE_PROFILE = "/rest/save";
 
 	//The ID of the current activated profile
 	//FIXME: Request from board on startup
@@ -93,7 +96,16 @@ public class ProfileManager extends AbstractHandler {
 				
 			}
 
-		} else if(target.equals(this.URL_SAVE_PROFILES)) {
+		} else if(target.equals(this.URL_DELETE_PROFILE)) {
+			int id = Integer.valueOf(baseRequest.getParameter("id"));
+			Profile p = this.getProfile(id);
+			
+			if(p != null) {
+				answer = this.deleteProfile(p);
+				
+			}
+
+		} else if(target.equals(this.URL_SAVE_PROFILE)) {
 			Profile p = Profile.readProfile(baseRequest.getParameter("profile"));
 			boolean apply = Boolean.valueOf(baseRequest.getParameter("apply"));
 			
@@ -112,6 +124,15 @@ public class ProfileManager extends AbstractHandler {
 		}
 	}
 	
+	private String deleteProfile(Profile p) {
+		System.out.println(p);
+		this.PROFILES.remove(p);
+		this.getProfileSaveFile(p).delete();
+		
+		return "";
+		
+	}
+
 	private String sendProfilesList() {
 		//Create a new list which is send as answer
 		List<SimpleProfileWrapper> profilesList = new ArrayList<SimpleProfileWrapper>(this.PROFILES.size());
@@ -123,7 +144,7 @@ public class ProfileManager extends AbstractHandler {
 
 		}
 
-		//Create the answr String by serializing the list to JSON
+		//Create the answer String by serializing the list to JSON
 		return GsonSupport.createGson().toJson(profilesList);
 		
 	}
@@ -138,18 +159,26 @@ public class ProfileManager extends AbstractHandler {
 		System.out.println(apply);
 		this.writeProfile(p);
 		
+		if(apply) {
+			//FIXME Apply project
+			
+		}
+		
 		return "";
 		
 	}
 	
 	private void writeProfile(Profile p) throws IOException {
 		this.setProfile(p);
-		String name = p.getId() + ".json";
-		File target = new File(this.PROFILE_SAVE_LOCATION, name);
 		
-		BufferedWriter bw = new BufferedWriter(new FileWriter(target));
+		BufferedWriter bw = new BufferedWriter(new FileWriter(this.getProfileSaveFile(p)));
 		bw.write(GsonSupport.createGson().toJson(p));
 		bw.close();
+		
+	}
+	
+	private File getProfileSaveFile(Profile p) {
+		return new File(this.PROFILE_SAVE_LOCATION, p.getId() + ".json");
 		
 	}
 }

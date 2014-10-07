@@ -1,6 +1,7 @@
 var urlProfilesList = 'rest/profiles_list';
 var urlProfileData = 'rest/profile?id=';
 var urlProfileSave = 'rest/save';
+var urlProfileDelete = 'rest/delete?id=';
 var maxLedIndex = 59;
 var maxFrameCount = 12;
 var maxColorStopsCount = 10;
@@ -121,6 +122,7 @@ $(function() {
     if(confirm('Do you really want to dismiss all changes you\'ve made to this profile?')) {
       config = JSON.parse(JSON.stringify(configBackup));
       applyConfig();
+      rename(config.name);
       
     }
   });
@@ -135,7 +137,45 @@ $(function() {
     saveProfile(this, true);
     
   });
+  
+  //click listener for btn_delete
+  $('#btn_delete').click(function() {
+    if(confirm('Do you really want to DELETE this profile? This can not be undone.')) {
+      loadURLAsync(urlProfileDelete + config.id, function(){});
+      $('.dropdown-menu li[profileId=' + config.id + ']').remove();
+      showProfile(0);
+      
+    }
+  });
+  
+  //click listener for btn_download
+  $('#btn_export').click(function() {
+    var blob = new Blob([JSON.stringify(config)], {type: "application/json"});
+    var url = URL.createObjectURL(blob);
+    a = $("<a><a/>"); // the id of the <a> element where you will render the download link
+    $(a).attr('href', url);
+    $(a).attr('download', config.name + ".profile");
+    $(a)[0].click();
+    
+  });
+
+  //click listener for btn_activate
+  $('#btn_rename').click(function() {
+    var newName = prompt('Enter a new name for "' + config.name + '":');
+    
+    if(newName.length > 0) {
+      rename(newName);
+      
+    }
+  });
 });
+
+function rename(newName) {
+   config.name = newName;
+    $('#profiles_selected_name').html(newName);
+    $('.dropdown-menu li[profileId=' + config.id + '] .name').html(newName);
+  
+}
 
 function saveProfile(button, apply) {
   apply = apply != false && apply != undefined;
@@ -174,7 +214,7 @@ function loadProfilesList() {
         //iterate over profiles from json object
         $(json).each(function(i, e) {
           //add a list entry for profile
-          $('#profiles_list').append('<li profilename="' + e.name + '" profileid="' + e.id + '"><a href="#"><span class="nav-icon glyphicon"></span>'+ e.name + '</a></li>');
+          $('#profiles_list').append('<li profilename="' + e.name + '" profileid="' + e.id + '"><a href="#"><span class="nav-icon glyphicon"></span><span class="name">'+ e.name + '</span></a></li>');
 
           //check if the current profile is active. if so mark it
           if(e.active) {
