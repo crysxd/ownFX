@@ -174,9 +174,6 @@ input {
   margin: 0;
   margin-bottom: 30px;
 }
-#profile_edit {
-  display: none;
-}
 .frame .color-stop {
   width: 20px;
   height: 20px;
