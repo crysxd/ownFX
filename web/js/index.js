@@ -2,6 +2,7 @@ var urlProfilesList = 'rest/profiles_list';
 var urlProfileData = 'rest/profile?id=';
 var urlProfileSave = 'rest/save';
 var urlProfileDelete = 'rest/delete?id=';
+var urlProfileImport = 'rest/import';
 var maxLedIndex = 59;
 var maxFrameCount = 12;
 var maxColorStopsCount = 10;
@@ -159,7 +160,7 @@ $(function() {
     
   });
 
-  //click listener for btn_activate
+  //click listener for btn_rename
   $('#btn_rename').click(function() {
     var newName = prompt('Enter a new name for "' + config.name + '":');
     
@@ -167,6 +168,15 @@ $(function() {
       rename(newName);
       
     }
+  });
+  
+  
+  //click listener for btn_import
+  $('#btn_import').click(function() {
+    loadURLAsync(urlProfileImport, function(state, result) {
+      window.location.reload();
+      
+    });
   });
 });
 

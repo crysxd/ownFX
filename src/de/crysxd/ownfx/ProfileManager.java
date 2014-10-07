@@ -11,6 +11,8 @@ import java.util.Vector;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
@@ -32,6 +34,9 @@ public class ProfileManager extends AbstractHandler {
 	
 	//The URL on which a profile can be saved
 	private final String URL_SAVE_PROFILE = "/rest/save";
+	
+	//The URL on which a profile can be saved
+	private final String URL_IMPORT_PROFILE = "/rest/import";
 
 	//The ID of the current activated profile
 	//FIXME: Request from board on startup
@@ -111,7 +116,11 @@ public class ProfileManager extends AbstractHandler {
 			
 			answer = this.saveProfile(p, apply);
 			
+		} else if(target.equals(this.URL_IMPORT_PROFILE)) {
+			answer = this.importProfile();
+			
 		}  
+		
 		
 		if(answer != null ) {
 			baseRequest.setHandled(true);
@@ -131,6 +140,40 @@ public class ProfileManager extends AbstractHandler {
 		
 		return "";
 		
+	}
+	
+	private String importProfile() throws IOException {
+		JFileChooser fc = new JFileChooser();
+		fc.setFileFilter(new FileFilter() {
+			
+			@Override
+			public String getDescription() {
+				return "ownFX Profile";
+				
+			}
+			
+			@Override
+			public boolean accept(File f) {
+				return f.isDirectory() || f.getName().endsWith(".profile");
+				
+			}
+		});
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fc.setMultiSelectionEnabled(true);
+		fc.showOpenDialog(null);
+		File[] files = fc.getSelectedFiles();
+		
+		if(files == null || files.length == 0)
+			return "";
+		
+		for(File f: files) {
+			Profile p = Profile.readProfile(f);
+			this.PROFILES.add(p);
+			this.saveProfile(p, false);
+			
+		}
+		
+		return "";
 	}
 
 	private String sendProfilesList() {
