@@ -136,6 +136,19 @@ $(function() {
    profile.import();
     
   });
+  
+  //click listener for btn_new_profile
+  $('#btn_new_profile').click(function() {
+    var name = prompt('Enter a new name for the new profile:');
+    
+    if(name.length > 0) {
+      profile.rename(name);
+      
+    }
+    
+    profile.newProfile(name);
+    
+  });
 });
 
 function onColorChanged(color) {

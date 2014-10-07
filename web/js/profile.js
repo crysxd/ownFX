@@ -85,8 +85,15 @@ profile.delete = function() {
   loadURLAsync(this.urlProfileDelete + this.displayedProfile.id, function() {
       window.location.reload();
     
-  });
-    
+  });  
 }
 
-
+profile.newProfile = function(name) {
+  var id = new Date().getTime();
+  this.displayedProfile = {id: id,name: name, frames:new Array()};
+  this.displayedBackup = JSON.stringify(this.displayedProfile);
+  
+  profilesList.addEntry(name, id);
+  this.restore();
+  
+}

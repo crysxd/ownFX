@@ -1,6 +1,7 @@
 var maxLedIndex = 59;
 var maxFrameCount = 12;
 var maxColorStopsCount = 10;
+var maxLedIndex = 59;
 
 $(function() {
   //Load list of all profiles and display the first one

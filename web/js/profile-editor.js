@@ -3,17 +3,22 @@ var profileEditor = new Object();
 profileEditor.selectedFrameIndex      = 0;
 profileEditor.selectedColorStopIndex  = 0;
 
-var maxLedIndex = 59;
-
+//=======================================================================================
 function updateUi() {
   //Empty configuration
   $('#profile_edit_configuration').html('');
 
   //iterate over all frames
-  $(profile.displayedProfile.frames).each(function(i, e) {
-    profileEditor.addNewFrame(e);
+  $(profile.displayedProfile.frames).each(function() {
+    profileEditor.addNewFrame();
 
   });
+  
+  //If no Frame is available, add atleast one
+  if(profile.getFrameCount() <= 0) {
+    profileEditor.addNewFrame();
+    
+  }
     
   //Update displayed name
   profilesList.update();
@@ -78,10 +83,11 @@ profileEditor.updateFrame = function(frameIndex) {
     frameIndex = this.selectedFrameIndex;
     
   }
-  
+
   //Check if frame is in config, if not, create a new empty frame
   if(profile.getFrame(frameIndex) === undefined) {
-   profile.displayedProfile.frames[frameIndex] = {pauseTime:0, transitionTime:2000, colorStops:[{ledIndex:0, color:"#0000FF"}]};
+    console.log('new');
+    profile.displayedProfile.frames[frameIndex] = {pauseTime:0, transitionTime:2000, colorStops:[{ledIndex:0, color:"#0000FF"}]};
     
   }
   
@@ -341,6 +347,7 @@ profileEditor.buildCssGradient = function(colorStops) {
   
 }
 
+//=======================================================================================
 profileEditor.onColorStopNodeDragged = function(e) {
   //Save nodes
   var frameNode = profileEditor.getFrameNode(profileEditor.selectedFrameIndex);
@@ -372,6 +379,7 @@ profileEditor.onColorStopNodeDragged = function(e) {
 
 }
 
+//=======================================================================================
 profileEditor.updateSidebar = function() {
   $('#sidebar_frame_title').html('Frame ' + (this.selectedFrameIndex + 1));
   $('#sidebar_color_stop_title').html('Color Stop ' + (this.selectedColorStopIndex + 1));
