@@ -40,7 +40,7 @@ public class ProfileManager extends AbstractHandler {
 
 	//The ID of the current activated profile
 	//FIXME: Request from board on startup
-	private int activeProfileId = 0;
+	private long activeProfileId = 0;
 
 	//The list of all available projects
 	private final List<Profile> PROFILES = new Vector<>();
@@ -62,7 +62,7 @@ public class ProfileManager extends AbstractHandler {
 		}		
 	}
 	
-	private synchronized Profile getProfile(int id) {
+	private synchronized Profile getProfile(long id) {
 		for(Profile p: this.PROFILES) {
 			if(p.getId() == id) {
 				return p;
@@ -93,7 +93,7 @@ public class ProfileManager extends AbstractHandler {
 			answer = this.sendProfilesList();
 			
 		} else if(target.equals(this.URL_GET_PROFILE)) {
-			int id = Integer.valueOf(baseRequest.getParameter("id"));
+			long id = Long.valueOf(baseRequest.getParameter("id"));
 			Profile p = this.getProfile(id);
 			
 			if(p != null) {
@@ -102,7 +102,7 @@ public class ProfileManager extends AbstractHandler {
 			}
 
 		} else if(target.equals(this.URL_DELETE_PROFILE)) {
-			int id = Integer.valueOf(baseRequest.getParameter("id"));
+			long id = Long.valueOf(baseRequest.getParameter("id"));
 			Profile p = this.getProfile(id);
 			
 			if(p != null) {

@@ -12,7 +12,7 @@ import java.util.Vector;
 public class Profile {
 	
 	private String name;
-	private int id;
+	private long id;
 	private List<Frame> frames = new Vector<>();
 	
 	public Profile() {
@@ -29,12 +29,12 @@ public class Profile {
 		
 	}
 	
-	public int getId() {
+	public long getId() {
 		return id;
 		
 	}
 	
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 		
 	}
