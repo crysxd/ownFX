@@ -3,7 +3,9 @@ var profileEditor = new Object();
 profileEditor.selectedFrameIndex      = 0;
 profileEditor.selectedColorStopIndex  = 0;
 
-//=======================================================================================
+/****************************************************************************************
+ * Updates the entire UI including the profile editor, the profiles list and the sidebar
+ */
 function updateUi() {
   //Empty configuration
   $('#profile_edit_configuration').html('');
@@ -28,7 +30,9 @@ function updateUi() {
   
 }
 
-//=======================================================================================
+/****************************************************************************************
+ * Adds a new frame to the current profile and displays it
+ */
 profileEditor.addNewFrame = function() {
   //Calculate the next frame index based on the number of existing frames
   var index = this.getFrameNodeCount();
@@ -40,12 +44,17 @@ profileEditor.addNewFrame = function() {
   
   //Add a click function to the frame to select it on click
   frame.mousedown(function(e) {
+    //Select the frame
     profileEditor.selectFrame(index);
     
+    //If there are less than the max allowed color stops, create a new one
     if(profile.getFrame(profileEditor.selectedFrameIndex).colorStops.length < maxColorStopsCount) {
-      var ledNumber = profileEditor.pixelsToLedNumber(e.clientX);
+      //Calculate the ledIndex of the new color stop
+      var ledIndex = profileEditor.pixelsToLedIndex(e.clientX);
+      
+      //Add a new color stop object to the profile
       profile.getFrame(profileEditor.selectedFrameIndex).colorStops.push({
-        ledIndex: ledNumber,
+        ledIndex: ledIndex,
         color: "#0000FF"
       });
       
@@ -54,12 +63,13 @@ profileEditor.addNewFrame = function() {
       
       //select the newly added color stop, search it first (may be sorted)
       $(profileEditor.getSelectedFrame().colorStops).each(function(i, e) {
-        if(ledNumber == e.ledIndex) {
+        if(ledIndex == e.ledIndex) {
           profileEditor.selectColorStop(i);
 
         }
       });
     } else {
+      //The maximum frame number has been reached. Show a error
       alert('You can not add more than ' + maxColorStopsCount + ' color stops in a frame.');
       
     }
@@ -77,7 +87,9 @@ profileEditor.addNewFrame = function() {
   
 }
 
-//=======================================================================================
+/****************************************************************************************
+ * Adds a new frame to the current profile and displays it
+ */
 profileEditor.updateFrame = function(frameIndex) {
   if(frameIndex == undefined) {
     frameIndex = this.selectedFrameIndex;
@@ -106,7 +118,9 @@ profileEditor.updateFrame = function(frameIndex) {
 
 }
 
-//=======================================================================================
+/****************************************************************************************
+ * Selects the frame with the given index and updates the UI to display the change.
+ */
 profileEditor.selectFrame = function(frameIndex) {
   //Cancel if frame is already selected
   if(this.selectedFrameIndex == frameIndex) {
@@ -134,7 +148,9 @@ profileEditor.selectFrame = function(frameIndex) {
 
 }
 
-//=======================================================================================
+/****************************************************************************************
+ * Selects the colot stop with the given index from the currently selected frame
+ */
 profileEditor.selectColorStop = function(colorStopIndex) {
   //If index is undefines assume zero
   if(colorStopIndex == undefined) {
@@ -153,61 +169,80 @@ profileEditor.selectColorStop = function(colorStopIndex) {
 
 }
 
-//=======================================================================================
+/****************************************************************************************
+ * Returns the number of available frame HTML-nodes
+ */
 profileEditor.getFrameNodeCount = function() {
   return $('#profile_edit_configuration .frame').length;
   
 }
 
-//=======================================================================================
+/****************************************************************************************
+ * Returns the frame HTML-node with the given index
+ */
 profileEditor.getFrameNode = function(frameIndex) {
     return $('#profile_edit_configuration .frame:eq(' + frameIndex + ')');
 
 }
 
-//=======================================================================================
+/****************************************************************************************
+ * Returns the frame-connector HTML-node with the given index
+ */
 profileEditor.getFrameConenctorNode = function(frameIndex) {
   return $('#profile_edit_configuration .frame-connector:eq(' + frameIndex + ')');
 
 }
 
-//=======================================================================================
+/****************************************************************************************
+ * Returns the color stop HTML-node with the given index
+ */
 profileEditor.getColorStopNode = function(frameIndex, colorStopIndex) {
   return $('#profile_edit_configuration .frame:eq(' + frameIndex + ') .color-stop:eq(' + colorStopIndex + ')');
 
 }
 
-//=======================================================================================
+/****************************************************************************************
+ * Returns frame HTML-node of the currently selected frame
+ */
 profileEditor.getSelectedFrameNode = function() {
     return $('#profile_edit_configuration .frame:eq(' + this.selectedFrameIndex + ')');
 
 }
 
-//=======================================================================================
+/****************************************************************************************
+ * Returns frame-connector HTML-node of the currently selected frame
+ */
 profileEditor.getSelectedFrameConenctorNode = function() {
   return $('#profile_edit_configuration .frame-connector:eq(' + this.selectedFrameIndex + ')');
 
 }
 
-//=======================================================================================
-profileEditor.getSelectedColorStopNode = function() {
+/****************************************************************************************
+ * Returns color stop HTML-node of the currently selected color stop
+ */profileEditor.getSelectedColorStopNode = function() {
   return $('#profile_edit_configuration .frame:eq(' + this.selectedFrameIndex + ') .color-stop:eq(' + this.selectedColorStopIndex + ')');
 
 }
 
-//=======================================================================================
+/****************************************************************************************
+ * Returns the currently selected frame
+ */
 profileEditor.getSelectedFrame = function() {
   return profile.getFrame(this.selectedFrameIndex);
 
 }
 
-//=======================================================================================
+/****************************************************************************************
+ * Returns the currently selected color stop
+ */
 profileEditor.getSelectedColorStop = function() {
   return profile.getColorStop(this.selectedFrameIndex, this.selectedColorStopIndex);
 
 }
 
-//=======================================================================================
+/****************************************************************************************
+ * Renders the color stops of the frame with the given index
+ */
 profileEditor.renderColorStops = function(frameIndex) {
   //Save the framenode and clear its contents
   var frameNode = this.getFrameNode(frameIndex);  
@@ -243,7 +278,9 @@ profileEditor.renderColorStops = function(frameIndex) {
 }
 
 
-//=======================================================================================
+/****************************************************************************************
+ * Adds a color stop node to the currently selected frame
+ */
 profileEditor.addColorStopNode = function(color, ledNumber, frameNode, frameIndex, colorStopIndex) {
   //Create a color stop node
   var colorStop = $('<div class="color-stop"></div>');
@@ -279,8 +316,11 @@ profileEditor.addColorStopNode = function(color, ledNumber, frameNode, frameInde
   });
 }
 
-//=======================================================================================
-profileEditor.sortColorStops = function ColorStops(colorStops) {
+/****************************************************************************************
+ * Sorts the given color stops and also changes the selectColorStopsIndex, 
+ * if the selected color stop is sorted
+ */
+profileEditor.sortColorStops = function(colorStops) {
   //Sort color stops by led number (e.ledIndex) Bubble sort
   $(colorStops).each(function(i, e) {    
     $(colorStops).each(function(j, e) {
@@ -308,8 +348,10 @@ profileEditor.sortColorStops = function ColorStops(colorStops) {
   });
 }
 
-//=======================================================================================
-profileEditor.pixelsToLedNumber = function(pixels) {
+/****************************************************************************************
+ * Converts the pixels in the client-coordinate system to a valid ledindex
+ */
+profileEditor.pixelsToLedIndex = function(pixels) {
   //Get Colorstop node and calculate half width
   var colorStopNode = this.getColorStopNode(this.selectedFrameIndex, this.selectedColorStopIndex);
   var halfWidth = colorStopNode.width() / 2;
@@ -324,13 +366,17 @@ profileEditor.pixelsToLedNumber = function(pixels) {
   
 }
 
-//=======================================================================================
+/****************************************************************************************
+ * Converts the led index to percent of the complete led strip
+ */
 profileEditor.ledNumberToPercent = function(ledIndex) {
     //Calculate the position for the HTML elements and the CSS gradient
   return Math.round((ledIndex / maxLedIndex)*10000)/100;
 }
 
-//=======================================================================================
+/****************************************************************************************
+ * Builds a CSS gradient (as CSS syntax) from the given color stops and returns it
+ */
 profileEditor.buildCssGradient = function(colorStops) {
     //Start to build a CSS gradient
   var gradient = 'linear-gradient(to right, ';
@@ -347,7 +393,9 @@ profileEditor.buildCssGradient = function(colorStops) {
   
 }
 
-//=======================================================================================
+/****************************************************************************************
+ * Event handling when a color stop is dragged
+ */
 profileEditor.onColorStopNodeDragged = function(e) {
   //Save nodes
   var frameNode = profileEditor.getFrameNode(profileEditor.selectedFrameIndex);
@@ -369,7 +417,7 @@ profileEditor.onColorStopNodeDragged = function(e) {
   }
   
   //calculate the led number on base of x
-  var ledNumber = profileEditor.pixelsToLedNumber(e.clientX);
+  var ledNumber = profileEditor.pixelsToLedIndex(e.clientX);
   
   //Update the LED number
   profile.getColorStop(profileEditor.selectedFrameIndex, profileEditor.selectedColorStopIndex).ledIndex = ledNumber;
@@ -379,7 +427,9 @@ profileEditor.onColorStopNodeDragged = function(e) {
 
 }
 
-//=======================================================================================
+/****************************************************************************************
+ * Updates all informations displayed in the sidebar
+ */
 profileEditor.updateSidebar = function() {
   $('#sidebar_frame_title').html('Frame ' + (this.selectedFrameIndex + 1));
   $('#sidebar_color_stop_title').html('Color Stop ' + (this.selectedColorStopIndex + 1));
