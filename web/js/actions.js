@@ -142,12 +142,9 @@ $(function() {
     var name = prompt('Enter a new name for the new profile:');
     
     if(name.length > 0) {
-      profile.rename(name);
+    profile.newProfile(name);
       
     }
-    
-    profile.newProfile(name);
-    
   });
 });
 

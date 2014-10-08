@@ -137,7 +137,7 @@ profile.newProfile = function(name) {
   var id = new Date().getTime();
   
   //Create empty profile (First frame is added by UI as error handling)
-  this.displayedProfile = {id: id,name: name, frames:new Array()};
+  this.displayedProfile = {id: id, name: name, frames:new Array()};
   
   //Save a backup
   this.displayedBackup = JSON.stringify(this.displayedProfile);
