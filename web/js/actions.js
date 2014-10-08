@@ -11,6 +11,9 @@ $(function() {
     
   });
   
+  //Listen for window close or reload
+  window.onbeforeunload = profile.checkChange;
+  
   //On chnage
   $('#color_stop_color_edit').change(function() {
     var v = $('#color_stop_color_edit').val();

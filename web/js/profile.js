@@ -20,6 +20,12 @@ profile.displayedBackup  = undefined;
  * Loads the profile with the given ID from the server and displays it.
  */
 profile.showProfile = function(id) {
+  if(this.checkChange()) {
+    if(!confirm(this.checkChange()))
+      return;
+    
+  }
+  
   //Load information about profile from server, continue in callback
   loadURLAsync(profile.urlProfileData + id, function(state, result) {
       //If successfull
@@ -151,4 +157,14 @@ profile.newProfile = function(name) {
   //Save it
   this.save();
   
+}
+
+/****************************************************************************************
+ * Returns nothing if there are no unsaved changes and a text if there are changes.
+ */
+profile.checkChange = function() {
+  if(JSON.stringify(profile.displayedProfile) !== profile.displayedBackup) {
+    return "If you leave now, unsaved changes will be lost. Continue?";
+    
+  }
 }
