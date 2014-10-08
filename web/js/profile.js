@@ -104,6 +104,8 @@ profile.rename = function(newName) {
   //Update UI
   $('#profiles_selected_name').html(newName);
   $('.dropdown-menu li[profileId=' + profile.displayedProfile.id + '] .name').html(newName);
+  $('.dropdown-menu li[profileId=' + profile.displayedProfile.id + ']').attr('profileName', newName);
+
   
 }
 
