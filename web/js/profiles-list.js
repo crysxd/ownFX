@@ -1,7 +1,6 @@
 var profilesList = new Object();
 
 profilesList.urlProfilesList = 'rest/profiles_list';
-profilesList.list = undefined;
 
 profilesList.removeEntry = function(id) {
   $('#profiles_list li[profileid=' + id + ']').remove();
@@ -25,7 +24,6 @@ profilesList.addEntry = function(name, id) {
 
 profilesList.update = function() {
   this.setSelectedProfile();
-  this.setActiveProfile();
   
 }
 
@@ -50,13 +48,7 @@ profilesList.setSelectedName = function(name) {
 
 }
 
-profilesList.setActiveProfile = function(id) {
-  if(id == undefined && profile.displayedProfile != undefined)
-    id = profile.displayedProfile.id;
-  
-  if(id == undefined)
-    return;
-  
+profilesList.setActiveProfile = function(id) { 
   //Remove the ok glyphicon from all and add it to the active profile
   $('#profiles_list li>a>span').removeClass('glyphicon-cloud');
   $('#profiles_list li[profileid=' + id + ']>a>.nav-icon').addClass('glyphicon-cloud');
