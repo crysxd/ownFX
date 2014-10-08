@@ -13,8 +13,12 @@ $(function() {
   
   //On chnage
   $('#color_stop_color_edit').change(function() {
-    $.farbtastic('#color_stop_color_picker').setColor(this.val());
-    
+    var v = $('#color_stop_color_edit').val();
+    if(/[0-9a-f]{6}/gi.test(v)) {
+      $.farbtastic('#color_stop_color_picker').setColor('#' + v);
+      $('#color_stop_color_edit').val(v.toUpperCase());
+
+    }
   });
   
     
