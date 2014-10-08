@@ -435,8 +435,8 @@ profileEditor.updateSidebar = function() {
   $('#sidebar_color_stop_title').html('Color Stop ' + (this.selectedColorStopIndex + 1));
   $('#frame_pause_time').val(this.getSelectedFrame().pauseTime);
   $('#frame_transition_time').val(this.getSelectedFrame().transitionTime);
-  $('#color_stop_color_edit').val(this.getSelectedColorStop().color);
-  $.farbtastic('#color_stop_color_picker').setColor($('#color_stop_color_edit').val());
+  $('#color_stop_color_edit').val(this.getSelectedColorStop().color.toUpperCase().substr(1));
+  $.farbtastic('#color_stop_color_picker').setColor(this.getSelectedColorStop().color);
   $('#color_stop_position').val(this.getSelectedColorStop().ledIndex);
   
 }
