@@ -200,8 +200,6 @@ public class ProfileManager extends AbstractHandler {
 	}
 	
 	private String saveProfile(Profile p, boolean apply) throws IOException {
-		System.out.println(GsonSupport.createGson().toJson(p));
-		System.out.println(apply);
 		this.writeProfile(p);
 		
 		this.PROFILES.remove(this.getProfile(p.getId()));
