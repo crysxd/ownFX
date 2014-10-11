@@ -15,6 +15,8 @@
 
     <!-- Custom styles for this template -->
     <link href="css/settings.css" rel="stylesheet">
+    <link href="css/jquery.bootstrap-touchspin.min.css" rel="stylesheet">
+    <link href="css/bootstrap-select.min.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -62,112 +64,80 @@
         <h3>My Arduino</h3>
         <div class="row">
           <div class="col-lg-4">
-            <label for="time">RAM size</label>
-            <div class="input-group">
-              <input type="text" id="ramSize" class="form-control">
-              <span class="input-group-addon">
-                Byte
-              </span>
-            </div><!-- /input-group -->
+            <label for="time">RAM Size</label>
+            <input type="text" id="ramSize" class="form-control">
           </div><!-- /.col-lg-6 -->
         </div><!-- /.row -->
 
         <div class="row">         
           <div class="col-lg-4">
-            <label for="time">EEPROM size</label>
-            <div class="input-group">
-              <input type="text" id="eepromSize" class="form-control">
-              <span class="input-group-addon">
-                Byte
-              </span>
-            </div><!-- /input-group -->
+            <label for="time">EEPROM Size</label>
+            <input type="text" id="eepromSize" class="form-control">
           </div><!-- /.col-lg-6 --> 
         </div><!-- /.row -->
  
         <div class="row">         
           <div class="col-lg-4">
-            <label for="time">LED count</label>
-            <div class="input-group">
-              <input type="text" id="ledCount" class="form-control">
-               <span class="input-group-addon">
-                LEDs
-              </span>
-            </div><!-- /input-group -->
+            <label for="time">LED Count</label>
+            <input type="text" id="ledCount" class="form-control">
           </div><!-- /.col-lg-6 -->
         </div><!-- /.row -->
         
         <div class="row">         
           <div class="col-lg-4">
-            <label for="time">Neopixels pin</label>
-            <div class="input-group">
-              <span class="input-group-addon">
-                Pin
-              </span>
-              <input type="text" id="neopixlesPin" class="form-control">
-            </div><!-- /input-group -->
+            <label for="time">Neopixels Pin</label>
+            <input type="text" id="neopixlesPin" lass="form-control">
           </div><!-- /.col-lg-6 -->
         </div><!-- /.row -->
         
         <div class="row">         
           <div class="col-lg-4">
             <label for="time">Serial Interface</label>
-            <div class="dropdown">
-              <button class="btn btn-default dropdown-toggle" id="serialInterface" type="button" id="dropdownMenu1" data-toggle="dropdown">
-                Dropdown
-                <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
-                <li role="presentation" class="divider"></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
-              </ul>
-            </div><!-- /input-group -->
+            <select>
+              <option selected>COM 4</option>
+              <option>COM 5</option>
+            </select>
           </div><!-- /.col-lg-6 -->
         </div><!-- /.row -->
-      
+    
         <hr>
         
         <h3>General Settings</h3>
         <div class="row">
           <div class="col-lg-4">
-            <label for="time">Maximum frames</label>
-            <div class="input-group">
-              <input type="text" id="maximumFrames" class="form-control">
-              <span class="input-group-addon">
-                Frames
-              </span>
-            </div><!-- /input-group -->
+            <label for="time">Maximum Frames</label>
+            <input type="text" id="maximumFrames" class="form-control">
           </div><!-- /.col-lg-6 -->
         </div><!-- /.row -->
         
         <div class="row">
           <div class="col-lg-4">
-            <label for="time">Maximum color stops per frame</label>
-            <div class="input-group">
-              <input type="text" id="maximumColorStops" class="form-control">
-              <span class="input-group-addon">
-                Color Stops/Frame
-              </span>
-            </div><!-- /input-group -->
+            <label for="time">Maximum Color-Stops per Frame</label>
+            <input type="text" id="maximumColorStops" class="form-control">
+          </div><!-- /.col-lg-6 -->
+        </div><!-- /.row -->
+        
+        <div class="row">
+          <div class="col-lg-4">
+            <label for="time">System Brightness</label>
+            <input type="text" id="systemBrightness" class="form-control">
           </div><!-- /.col-lg-6 -->
         </div><!-- /.row -->
         
         <hr>
       
         <h3>Calculated System Usage</h3>
-        <label for="time">RAM usage</label>
+        <label for="time">RAM</label>
         <div class="progress">
-          <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="120" aria-valuemin="0" aria-valuemax="100" style="width: 120%;">
-            120%
+          <div class="progress-bar progress-bar-success" id="progressRam" role="progressbar" aria-valuenow="1" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+            0%
           </div>
         </div>
       
-        <label for="time">EEPROM usage</label>
+        <label for="time">EEPROM</label>
         <div class="progress">
-          <div class="progress-bar progress-bar-success" role="progress-bar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
-            60%
+          <div class="progress-bar progress-bar-success" id="progressEeprom" role="progress-bar" aria-valuenow="1" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+            0%
           </div>
         </div>
         
@@ -178,7 +148,12 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.bootstrap-touchspin.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-select.min.js"></script>
     <script src="js/rest.js"></script>
+    <script src="js/application_settings.js"></script>
+    <script src="js/settings.js"></script>
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="js/ie10-viewport-bug-workaround.js"></script>
