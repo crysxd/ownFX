@@ -9,5 +9,10 @@
 	<classpathentry kind="lib" path="lib/jetty-http-8.1.14.v20131031.jar"/>
 	<classpathentry kind="lib" path="lib/jetty-server-8.1.14.v20131031.jar"/>
 	<classpathentry kind="lib" path="lib/gson-2.2.4.jar"/>
+	<classpathentry kind="lib" path="lib/RXTXcomm.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="ownFX/native"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
