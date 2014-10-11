@@ -2,6 +2,8 @@ package de.crysxd.ownfx;
 
 import java.io.File;
 
+import javax.swing.UIManager;
+
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.DefaultHandler;
@@ -11,6 +13,14 @@ import org.eclipse.jetty.server.nio.SelectChannelConnector;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			
+		}
+		
 		Server server = new Server();
 
 		//create and add Connector for given port
