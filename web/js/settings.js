@@ -92,6 +92,13 @@ function updateUi() {
   fieldMaximumColorStops.val(settings.loadedSettings.maxColorStopsCount);
   fieldSystemBrightness.val(settings.loadedSettings.systemBrightness/2.55);
   
+  $(settings.loadedSettings.serialInterfaces).each(function(i, e) {
+    fieldSerialInterface.append('<option value="' + i + '">' + e + '</option>');
+    
+  });
+  
+  fieldSerialInterface.val(settings.loadedSettings.serialInterfaceSelected);
+  
   updateSystemUsage();
   
 }
