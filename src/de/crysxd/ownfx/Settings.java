@@ -9,21 +9,21 @@ import java.io.InputStream;
 
 public class Settings {
 	
-	private int ledCount 				= 60	;
-	private int neopixlesPin			= 6		;
-	private String[] serialInterfaces	= {}	;
-	private int serialInterfaceSelected = 0		;
-	private int ramSize 				= 2048	;
-	private int eepromSize 				= 1024	;
-	private int maxFrameCount 			= 10	;
-	private int maxColorStopsCount 		= 10	;
-	private int bytesPerColorStop 		= 2		;
-	private int bytesPerFrame 			= 5		;
-	private int maxPossibleLedCount 	= 1024	;
-	private int basicRamUsage 			= 128	;
-	private int basicEepromUsage 		= 128	;
-	private int ramUsagePerLed 			= 4		;
-	private int systemBrightness 		= 255	;
+	private int ledCount 					= 60	;
+	private int neopixlesPin				= 6		;
+	private String[] serialInterfaces		= {}	;
+	private String serialInterfaceSelected 	= "COM4";
+	private int ramSize 					= 2048	;
+	private int eepromSize 					= 1024	;
+	private int maxFrameCount 				= 10	;
+	private int maxColorStopsCount 			= 10	;
+	private int bytesPerColorStop 			= 2		;
+	private int bytesPerFrame 				= 5		;
+	private int maxPossibleLedCount 		= 1024	;
+	private int basicRamUsage 				= 128	;
+	private int basicEepromUsage 			= 128	;
+	private int ramUsagePerLed 				= 4		;
+	private int systemBrightness 			= 255	;
 	
 	public static Settings readSettings(String json) {
 		return GsonSupport.<Settings>parse(json, Settings.class);
@@ -42,6 +42,11 @@ public class Settings {
 	
 	public void save(File ourput) throws FileNotFoundException, IOException {
 		GsonSupport.stringify(this, new FileOutputStream(ourput));
+		
+	}
+	
+	public void updateAvailableSerialInterfaces() {
+		this.serialInterfaces = SerialSupport.getSerialInterfaces();
 		
 	}
 	
@@ -75,12 +80,12 @@ public class Settings {
 	
 	}
 	
-	public int getSerialInterfaceSelected() {
+	public String getSerialInterfaceSelected() {
 		return serialInterfaceSelected;
 	
 	}
 	
-	public void setSerialInterfaceSelected(int serialInterfaceSelected) {
+	public void setSerialInterfaceSelected(String serialInterfaceSelected) {
 		this.serialInterfaceSelected = serialInterfaceSelected;
 	
 	}
