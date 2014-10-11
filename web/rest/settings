@@ -10,4 +10,7 @@
   "bytesPerColorStop": 2,
   "bytesPerFrame": 5,
   "maxPossibleColorStopsPerFrame": 1024,
+  "basicRamUsage": 128,
+  "ramUsagePerLed": 9
+  "systemBrightness": 255
 }
