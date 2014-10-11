@@ -6,5 +6,8 @@
   "ramSize": 2048,
   "eepromSize": 1024,
   "maxFrameCount": 10,
-  "maxColorStopsCount": 10
+  "maxColorStopsCount": 10,
+  "bytesPerColorStop": 2,
+  "bytesPerFrame": 5,
+  "maxPossibleColorStopsPerFrame": 1024,
 }
