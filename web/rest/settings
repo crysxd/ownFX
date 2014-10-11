@@ -1,0 +1,10 @@
+{
+  ledCount: 60,
+  neopixlesPin: 6,
+  serialInterfaces: ["COM 4", "COM5"],
+  serialInterfaceSelected: 0,
+  ramSize: 2048,
+  eepromSize: 1024,
+  maximumFrame: 10,
+  maximumColorStops: 10
+}
