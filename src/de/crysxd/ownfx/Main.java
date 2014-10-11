@@ -38,7 +38,7 @@ public class Main {
 
 		//Create a HandlerList including the ResourceHandler, a RestHandler (for accessing the Database) and a DefaultHandler
 		HandlerList handlers = new HandlerList();
-		handlers.setHandlers(new Handler[] {new ProfileManager(),  resourceHandler, new DefaultHandler() });
+		handlers.setHandlers(new Handler[] {new ProfileManager(), new SettingsManager(),  resourceHandler, new DefaultHandler() });
 		server.setHandler(handlers);
 
 		//Start Server (seperate Thread)
