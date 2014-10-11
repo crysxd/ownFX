@@ -150,7 +150,7 @@ function applyChanges() {
   settings.currentSettings.neopixlesPin = fieldNeopixlesPin.val();
   settings.currentSettings.maxFrameCount = fieldMaximumFrames.val();
   settings.currentSettings.maxColorStopsCount = fieldMaximumColorStops.val();
-  settings.currentSettings.systemBrightness = fieldSystemBrightness.val() * 2.55;
+  settings.currentSettings.systemBrightness = Math.round(fieldSystemBrightness.val() * 2.55);
   settings.currentSettings.serialInterfaceSelected = fieldSerialInterface.val();
 
 }
