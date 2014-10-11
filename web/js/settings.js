@@ -103,7 +103,7 @@ function updateUi() {
   fieldSystemBrightness.val(settings.currentSettings.systemBrightness/2.55);
   
   $(settings.currentSettings.serialInterfaces).each(function(i, e) {
-    fieldSerialInterface.append('<option value="' + i + '">' + e + '</option>');
+    fieldSerialInterface.append('<option value="' + e + '">' + e + '</option>');
     
   });
   
