@@ -2,26 +2,28 @@ package de.crysxd.ownfx;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class Settings {
 	
-	private int ledCount;
-	private int neopixlesPin;
-	private String[] serialInterfaces;
-	private int serialInterfaceSelected;
-	private int ramSize;
-	private int eepromSize;
-	private int maxFrameCount;
-	private int maxColorStopsCount;
-	private int bytesPerColorStop;
-	private int bytesPerFrame;
-	private int maxPossibleLedCount;
-	private int basicRamUsage;
-	private int basicEepromUsage;
-	private int ramUsagePerLed;
-	private int systemBrightness;
+	private int ledCount 				= 60	;
+	private int neopixlesPin			= 6		;
+	private String[] serialInterfaces	= {}	;
+	private int serialInterfaceSelected = 0		;
+	private int ramSize 				= 2048	;
+	private int eepromSize 				= 1024	;
+	private int maxFrameCount 			= 10	;
+	private int maxColorStopsCount 		= 10	;
+	private int bytesPerColorStop 		= 2		;
+	private int bytesPerFrame 			= 5		;
+	private int maxPossibleLedCount 	= 1024	;
+	private int basicRamUsage 			= 128	;
+	private int basicEepromUsage 		= 128	;
+	private int ramUsagePerLed 			= 4		;
+	private int systemBrightness 		= 255	;
 	
 	public static Settings readSettings(String json) {
 		return GsonSupport.<Settings>parse(json, Settings.class);
@@ -35,6 +37,11 @@ public class Settings {
 	
 	public static Settings readSettings(File jsonFile) throws IOException {
 		return Settings.readSettings(new FileInputStream(jsonFile));
+		
+	}
+	
+	public void save(File ourput) throws FileNotFoundException, IOException {
+		GsonSupport.stringify(this, new FileOutputStream(ourput));
 		
 	}
 	
