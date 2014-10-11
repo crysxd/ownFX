@@ -27,7 +27,7 @@ $(function() {
     });
     fieldLedCount.TouchSpin({
       min: 0,
-      max: settings.loadedSettings.maxPossibleLedCount,
+      max: settings.currentSettings.maxPossibleLedCount,
       step: 10,
       postfix: 'LEDs'
     });
@@ -62,6 +62,7 @@ $(function() {
     //add change listener to all select and input elements
     $('input, select').change(function() {
       updateSystemUsage();
+      applyChanges();
       
     });
     
@@ -73,46 +74,53 @@ $(function() {
     
      //add listener to save button
     $("#btn_undo").click(function() {
-      settings.load(updateUi);
+      settings.undo();
+      updateUi();
       
     });
     
     //Make select element look like bootstrap
     $('select').selectpicker();
     
+    //Add unbeforeunload to promt user if changed settings are not saved
+    window.onbeforeunload = function() {
+      if(settings.isChanged()) {
+        return "Some changed values are not saved yet.";
+        
+      }
+    }
+    
   });
 });
 
 function updateUi() {
-  fieldRamSize.val(settings.loadedSettings.ramSize);
-  fieldEepromSize.val(settings.loadedSettings.eepromSize);
-  fieldLedCount.val(settings.loadedSettings.ledCount);
-  fieldNeopixlesPin.val(settings.loadedSettings.neopixlesPin);
-  fieldMaximumFrames.val(settings.loadedSettings.maxFrameCount);
-  fieldMaximumColorStops.val(settings.loadedSettings.maxColorStopsCount);
-  fieldSystemBrightness.val(settings.loadedSettings.systemBrightness/2.55);
+  fieldRamSize.val(settings.currentSettings.ramSize);
+  fieldEepromSize.val(settings.currentSettings.eepromSize);
+  fieldLedCount.val(settings.currentSettings.ledCount);
+  fieldNeopixlesPin.val(settings.currentSettings.neopixlesPin);
+  fieldMaximumFrames.val(settings.currentSettings.maxFrameCount);
+  fieldMaximumColorStops.val(settings.currentSettings.maxColorStopsCount);
+  fieldSystemBrightness.val(settings.currentSettings.systemBrightness/2.55);
   
-  $(settings.loadedSettings.serialInterfaces).each(function(i, e) {
+  $(settings.currentSettings.serialInterfaces).each(function(i, e) {
     fieldSerialInterface.append('<option value="' + i + '">' + e + '</option>');
     
   });
   
-  fieldSerialInterface.val(settings.loadedSettings.serialInterfaceSelected);
+  fieldSerialInterface.val(settings.currentSettings.serialInterfaceSelected);
   
   updateSystemUsage();
   
 }
 
 function updateSystemUsage() {
-    console.log('update');
-
-  var ramUsage = settings.loadedSettings.basicRamUsage;
-  ramUsage += fieldLedCount.val() * settings.loadedSettings.ramUsagePerLed;
+  var ramUsage = settings.currentSettings.basicRamUsage;
+  ramUsage += fieldLedCount.val() * settings.currentSettings.ramUsagePerLed;
   var ramPercent = Math.round(ramUsage / fieldRamSize.val() * 10000) / 100;
   
-  var eepromUsage = settings.loadedSettings.basicEepromUsage;
-  eepromUsage += fieldMaximumFrames.val() * settings.loadedSettings.bytesPerFrame;
-  eepromUsage += fieldMaximumFrames.val() * fieldMaximumColorStops.val() * settings.loadedSettings.bytesPerColorStop;
+  var eepromUsage = settings.currentSettings.basicEepromUsage;
+  eepromUsage += fieldMaximumFrames.val() * settings.currentSettings.bytesPerFrame;
+  eepromUsage += fieldMaximumFrames.val() * fieldMaximumColorStops.val() * settings.currentSettings.bytesPerColorStop;
   var eepromPercent = Math.round(eepromUsage / fieldEepromSize.val() * 10000) / 100;
   
   applyToProgress(progressbarRam, ramPercent, ramUsage);
@@ -135,6 +143,14 @@ function applyToProgress(progressbar, percent, value) {
   
 }
 
-function save() {
-  
+function applyChanges() {
+  settings.currentSettings.ramSize = fieldRamSize.val();
+  settings.currentSettings.eepromSize = fieldEepromSize.val();
+  settings.currentSettings.ledCount = fieldLedCount.val();
+  settings.currentSettings.neopixlesPin = fieldNeopixlesPin.val();
+  settings.currentSettings.maxFrameCount = fieldMaximumFrames.val();
+  settings.currentSettings.maxColorStopsCount = fieldMaximumColorStops.val();
+  settings.currentSettings.systemBrightness = fieldSystemBrightness.val() * 2.55;
+  settings.currentSettings.serialInterfaceSelected = fieldSerialInterface.val();
+
 }
