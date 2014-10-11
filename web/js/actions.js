@@ -1,8 +1,8 @@
 $(function() {
   //Add listern to "new frame" button
   $('.frame-new').click(function() {
-    if(profile.getFrameCount() >= maxFrameCount) {
-      alert('You can not add more than ' + maxFrameCount + ' Frames!');
+    if(profile.getFrameCount() >= settings.maxFrameCount) {
+      alert('You can not add more than ' + settings.maxFrameCount + ' Frames!');
       return;
       
     }

@@ -48,7 +48,7 @@ profileEditor.addNewFrame = function() {
     profileEditor.selectFrame(index);
     
     //If there are less than the max allowed color stops, create a new one
-    if(profile.getFrame(profileEditor.selectedFrameIndex).colorStops.length < maxColorStopsCount) {
+    if(profile.getFrame(profileEditor.selectedFrameIndex).colorStops.length < settings.maxColorStopsCount) {
       //Calculate the ledIndex of the new color stop
       var ledIndex = profileEditor.pixelsToLedIndex(e.clientX);
       
@@ -70,7 +70,7 @@ profileEditor.addNewFrame = function() {
       });
     } else {
       //The maximum frame number has been reached. Show a error
-      alert('You can not add more than ' + maxColorStopsCount + ' color stops in a frame.');
+      alert('You can not add more than ' + settings.maxColorStopsCount + ' color stops in a frame.');
       
     }
 
@@ -257,7 +257,7 @@ profileEditor.renderColorStops = function(frameIndex) {
   if(colorStops.length == 1) {
     colorStops[1] = JSON.parse(JSON.stringify(colorStops[0]));
     colorStops[0].ledIndex = 0;
-    colorStops[1].ledIndex = maxLedIndex;
+    colorStops[1].ledIndex = settings.maxLedIndex;
     
   }
   
@@ -362,7 +362,7 @@ profileEditor.pixelsToLedIndex = function(pixels) {
   var maxx = minx + frameNode.width();
 
   //Calculate the # LED from x
-  return Math.round((pixels - minx) / (maxx - minx) * maxLedIndex);
+  return Math.round((pixels - minx) / (maxx - minx) * settings.maxLedIndex);
   
 }
 
@@ -371,7 +371,7 @@ profileEditor.pixelsToLedIndex = function(pixels) {
  */
 profileEditor.ledNumberToPercent = function(ledIndex) {
     //Calculate the position for the HTML elements and the CSS gradient
-  return Math.round((ledIndex / maxLedIndex)*10000)/100;
+  return Math.round((ledIndex / settings.maxLedIndex)*10000)/100;
 }
 
 /****************************************************************************************

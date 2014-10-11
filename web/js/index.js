@@ -1,14 +1,17 @@
 var maxLedIndex = 59;
 var maxFrameCount = 12;
 var maxColorStopsCount = 10;
-var maxLedIndex = 59;
 
 $(function() {
-  //Load list of all profiles and display the first one
-  profilesList.load(function(overview) {
-    profile.showProfile(overview[0].id);
+  //Load settings from server
+  settings.load(function() {
+    //Load list of all profiles and display the first one
+    profilesList.load(function(overview) {
+      profile.showProfile(overview[0].id);
     
+    });
   });
+
    
   //Add mouseup listener to end drag of color stop
   $(document).mouseup(function() {
@@ -36,7 +39,7 @@ $(function() {
     $("input[name='position']").TouchSpin({
     prefix: "LED #",
     min: 0,
-    max: maxLedIndex
+    max: settings.maxLedIndex
   });
 });
 
