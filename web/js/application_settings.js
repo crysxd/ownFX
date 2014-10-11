@@ -18,6 +18,7 @@ settings.load = function(callback) {
 
         }
       } catch(e) {
+        console.log(e);
         alert("Error while loading settings from server!");
 
       }
