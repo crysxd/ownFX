@@ -11,6 +11,7 @@
   "bytesPerFrame": 5,
   "maxPossibleLedCount": 1024,
   "basicRamUsage": 128,
+  "basicEepromUsage": 128,
   "ramUsagePerLed": 9,
   "systemBrightness": 255
 }
