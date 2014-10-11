@@ -37,7 +37,7 @@ settings.undo = function() {
 }
 
 settings.save = function(callback) {
-  var postParams = "settings=" + JSON.stringify(settings.loadedSettings);
+  var postParams = "settings=" + JSON.stringify(settings.currentSettings);
   loadURLAsync(this.urlSettingsSave, function(state, result) {
      if(state == 200) {
        settings.currentSettingsBackup = JSON.stringify(settings.currentSettings);
