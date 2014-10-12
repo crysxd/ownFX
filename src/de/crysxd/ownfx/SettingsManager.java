@@ -45,6 +45,11 @@ public class SettingsManager extends AbstractHandler {
 		this.currentSettings.updateAvailableSerialInterfaces();
 		
 	}
+	
+	public Settings getCurrentSettings() {
+		return this.currentSettings;
+		
+	}
 
 	@Override
 	public void handle(String target, Request baseRequest, HttpServletRequest request,

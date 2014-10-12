@@ -21,6 +21,11 @@ public class Main {
 			
 		}
 		
+		SettingsManager sManager = new SettingsManager();
+		ProfileManager pManager = new ProfileManager();
+		
+		ArduinoCommunicator arduinoCom = new ArduinoCommunicator(sManager.getCurrentSettings().getSerialInterfaceSelected());
+		
 		Server server = new Server();
 
 		//create and add Connector for given port
@@ -38,7 +43,7 @@ public class Main {
 
 		//Create a HandlerList including the ResourceHandler, a RestHandler (for accessing the Database) and a DefaultHandler
 		HandlerList handlers = new HandlerList();
-		handlers.setHandlers(new Handler[] {new ProfileManager(), new SettingsManager(),  resourceHandler, new DefaultHandler() });
+		handlers.setHandlers(new Handler[] {pManager, sManager, resourceHandler, new DefaultHandler() });
 		server.setHandler(handlers);
 
 		//Start Server (seperate Thread)
