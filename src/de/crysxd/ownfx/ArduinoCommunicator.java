@@ -5,6 +5,8 @@ import gnu.io.UnsupportedCommOperationException;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import javax.naming.CommunicationException;
 
@@ -86,8 +88,32 @@ public class ArduinoCommunicator {
 	}
 	
 	public void sendSettings(Settings s) {
-		throw new RuntimeException("Not implemented!");
+		try {
+			//Send request
+			System.out.println("Send request...");
+			
+			//Create data
+			byte[] buf = new byte[4];
+			buf[0] = 40;
+			buf[1] = 41;
+			buf[2] = 42;
+			buf[3] = 43;
+			
+			//Send
+			this.sendTask(this.TRANSMISSION_TASK_GET_INFO, buf);
+			
+			System.out.println("" + this.MY_CONNECTION.read8());
+			System.out.println("" + this.MY_CONNECTION.read8());
+			System.out.println("" + this.MY_CONNECTION.read8());
+			System.out.println("" + this.MY_CONNECTION.read8());
 
+		} catch (CommunicationException e) {
+			e.printStackTrace();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			
+		}
 	}
 	
 	public void sendProfile(Profile p) {
@@ -123,7 +149,6 @@ public class ArduinoCommunicator {
 	}
 	
 	public void updateSettings(Settings s) {
-		
 		try {
 			//Send request
 			System.out.println("Send request...");
@@ -143,8 +168,8 @@ public class ArduinoCommunicator {
 			
 		} catch (IOException e) {
 			e.printStackTrace();
+			
 		}
-
 	}
 	
 	private void sendTask(byte taskId, byte[] data) throws IOException, CommunicationException {
@@ -160,6 +185,7 @@ public class ArduinoCommunicator {
 		System.out.println("Writing task...");
 		out.write(taskId);
 		System.out.println("Writing data length (" + data.length + ")...");
+		//FIXME send correct length
 		out.write(0);
 		out.write(0);
 		
@@ -171,11 +197,12 @@ public class ArduinoCommunicator {
 		//Send data
 		short sendBytes = 0;
 		while(sendBytes < data.length) {
-			System.out.println("Sending " + sendBytes + " to " + (sendBytes + bufferSize) + "...");
-			this.waitForRady();
-			out.write(data, sendBytes, bufferSize);
-			sendBytes += bufferSize;
+			out.write(data[sendBytes++]);
 			
+			if(sendBytes%bufferSize == 0) {
+				this.waitForRady();
+				
+			}
 		}
 		
 		System.out.println("Waiting for done...");

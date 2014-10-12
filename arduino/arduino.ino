@@ -33,9 +33,14 @@ void setup() {
   //If the initialise flag is exactly 42, this application was used before and is initialised
   //If not, we must set some settings
   if(EEPROM.read(EEPROM_INITIALISED_FLAG) != 42) {
+    Serial.println("INIT");
      //Set the current profile id to zero
-     int64_t id = 0;
-     copyToEEPROM(&id, 8, EEPROM_CURRENT_PROFILE_ID);
+     int64_t buf = 0;
+     copyToEEPROM(&buf, 8, EEPROM_CURRENT_PROFILE_ID);
+     
+     //Set the led Count to 60
+     int16_t buf2 = 60;
+     copyToEEPROM(&buf2, 2, EEPROM_LED_COUNT);
      
      //Set the current system brightness to max
      EEPROM.write(EEPROM_CURRENT_BRIGHTNESS, 255);
@@ -69,7 +74,7 @@ void serialEvent() {
   
   //Read the length of the complete transmission
   int16_t transmissionLength = read16();
-  delay(100);
+
   //Send the size of the serial buffer which the partner should use as package size
   Serial.write(SERIAL_BUFFER_SIZE);
 
@@ -117,7 +122,22 @@ void receiveProfile(int16_t transmissionLength) {
 }
 
 void receiveSettings(int16_t transmissionLength) {
-
+  //Read data
+  int8_t brightness = read8();
+  int8_t neopixlesPin = read8();
+  int16_t ledCount = read16();
+  
+  //Save data
+  //copyToEEPROM(&ledCount, 2, EEPROM_LED_COUNT);
+  //EEPROM.write(EEPROM_CURRENT_BRIGHTNESS, brightness);
+  //EEPROM.write(EEPROM_NEOPIXLES_PIN, neopixlesPin);
+  
+  //Send done
+  sendDone();
+  
+  Serial.write(brightness);
+  Serial.write(neopixlesPin);
+  writeToSerial(&ledCount, 2);
 }
 
 

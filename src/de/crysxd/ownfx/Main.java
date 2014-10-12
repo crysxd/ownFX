@@ -48,6 +48,23 @@ public class Main {
 
 		//Start Server (seperate Thread)
 		server.start();
-
+		
+		System.out.println("Sending request...");
+		System.out.println(arduinoCom.getCurrentProfileId());
+		System.out.println("Done");
+		
+		System.out.println("=======================");
+		System.out.println("Sending request...");
+		Settings s = new Settings();
+		arduinoCom.updateSettings(s);
+		System.out.println("Done");
+		
+		System.out.println("RAM size: " + s.getRamSize());
+		System.out.println("EEPROM size: " + s.getEepromSize());
+		
+		System.out.println("Sending settings");
+		arduinoCom.sendSettings(sManager.getCurrentSettings());
+		System.out.println("Send!");
+		
 	}
 }
