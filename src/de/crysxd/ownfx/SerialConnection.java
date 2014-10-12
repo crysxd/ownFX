@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.PortUnreachableException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.TooManyListenersException;
 
 public class SerialConnection {
@@ -232,8 +233,9 @@ public class SerialConnection {
 		//Readng data
 		this.getInputStream().read(buf, 0, bytes);
 		
-		//Convert to byteBuffer and return
-		return ByteBuffer.wrap(buf);
+		//Convert to ByteBuffer, set LITLTE_ENDIAN and return
+		//Using little endian is needed due to the fact that Arduino uses little endian and java big endian
+		return ByteBuffer.wrap(buf).order(ByteOrder.LITTLE_ENDIAN);
 		
 	}
 	
