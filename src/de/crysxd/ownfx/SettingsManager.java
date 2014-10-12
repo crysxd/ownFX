@@ -1,7 +1,9 @@
 package de.crysxd.ownfx;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -33,8 +35,16 @@ public class SettingsManager extends AbstractHandler {
 			e.printStackTrace();
 			
 			this.currentSettings = new Settings();
+			
+			//Select the first serial interface if available
+			this.currentSettings.updateAvailableSerialInterfaces();
+			if(this.currentSettings.getSerialInterfaces().length > 0)
+				this.currentSettings.setSerialInterfaceSelected(this.currentSettings.getSerialInterfaces()[0]);
+			
 			try {
 				this.currentSettings.save(this.SETTINGS_SAVE_LOCATION);
+				Desktop.getDesktop().browse(new URI("http://localhost/settings.html"));
+				
 			} catch (Exception f) {
 				System.out.println("Error while saving newly created settings.");
 				f.printStackTrace();
