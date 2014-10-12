@@ -19,7 +19,7 @@ public class ArduinoCommunicator {
 	
 	private final byte TRANSMISSION_TASK_GET_PROFILE_ID = 0;
 	private final byte TRANSMISSION_TASK_SET_PROFILE    = 1;
-	private final byte TRANSMISSION_TASK_GET_SETTINGS   = 2;
+	private final byte TRANSMISSION_TASK_GET_INFO	    = 2;
 	private final byte TRANSMISSION_TASK_SET_SETTINGS   = 3;
 	
 	/**
@@ -123,7 +123,27 @@ public class ArduinoCommunicator {
 	}
 	
 	public void updateSettings(Settings s) {
-		throw new RuntimeException("Not implemented!");
+		
+		try {
+			//Send request
+			System.out.println("Send request...");
+			this.sendTask(this.TRANSMISSION_TASK_GET_INFO, new byte[0]);
+
+			//Read 8 bytes
+			System.out.println("Reading...");
+			s.setRamSize(this.MY_CONNECTION.read16());
+			s.setEepromSize(this.MY_CONNECTION.read16());
+
+			//Wait for Done signal
+			System.out.println("Waiting for done...");
+			this.waitForDone();
+			
+		} catch (CommunicationException e) {
+			e.printStackTrace();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 	
