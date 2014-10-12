@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.PortUnreachableException;
+import java.nio.ByteBuffer;
 import java.util.TooManyListenersException;
 
 public class SerialConnection {
@@ -25,6 +26,9 @@ public class SerialConnection {
 	
 	// The OutputStream over which data can be send
 	private final OutputStream OUTPUT;
+	
+	// The dafault polling rate in ns (1ms)
+	private final long DEFAULT_POLLING_RATE = 1000000;
 	
 	/**
 	 * Creates a new {@link SerialConnection} on the given serial port with the given baud rate.
@@ -118,4 +122,119 @@ public class SerialConnection {
 		this.SERIAL_PORT.close();
 		
 	}
+	
+	/**
+	 * Waits until at least one byte is available in the {@link InputStream}.
+	 * @throws IOException
+	 */
+	public void waitForInput() throws IOException {
+		this.waitForInput(this.DEFAULT_POLLING_RATE);
+		
+	}
+	
+	/**
+	 * Waits until at least one byte is available in the {@link InputStream}.
+	 * @param pollingIntervalNs the time interval ins nanoseconds in which the {@link InputStream} is checked for new data
+	 * @throws IOException
+	 */
+	public void waitForInput(long pollingIntervalNs) throws IOException {
+		this.waitForInput(pollingIntervalNs, 1);
+		
+	}
+	
+	/**
+	 * Waits until at least the given number of bytes is available in the {@link InputStream}.
+	 * @param pollingIntervalNs the time interval ins nanoseconds in which the {@link InputStream} is checked for new data
+	 * @param availableBytes the number of bytes which must be at least available
+	 * @throws IOException
+	 */
+	public void waitForInput(long pollingIntervalNs, int availableBytes) throws IOException {
+		/*
+		 * IMPORTANT NOTE
+		 * =============================================================================
+		 * Polling is used here because using Locks/Conditions and the provided listener
+		 * interface is causing a fatal JRE Error crashing the program.
+		 * To provide instant feedback about new data we need to use busy waiting in 
+		 * #waitNanos. Thread.sleep(0) would need about 15ms to 25ms under Windows due to 
+		 * content switching and is therefore a heavy bottleneck when reading big amounts
+		 * of data. 
+		 */
+		while(this.getInputStream().available() < availableBytes) {
+			this.waitNanos(pollingIntervalNs);
+			
+		}
+	}
+	
+	/**
+	 * Waits the given time in nanoseconds using busy waiting.
+	 * @param nanoTime the time in nanoseconds that should be waited
+	 */
+	private void waitNanos(long nanoTime) {
+		long start = System.nanoTime();
+		while(start+nanoTime >= System.nanoTime());
+		
+	}
+	
+	/**
+	 * Reads 8 bits represented by a {@link Byte}.
+	 * @return the read {@link Byte}
+	 * @throws IOException
+	 */
+	public byte read8() throws IOException {
+		this.waitForInput(this.DEFAULT_POLLING_RATE, 1);
+		return (byte) this.getInputStream().read();
+
+	}
+	
+	/**
+	 * Reads 16 bits represented by a {@link Short}.
+	 * @return the read {@link Short}
+	 * @throws IOException
+	 */
+	public short read16() throws IOException {
+		this.waitForInput(this.DEFAULT_POLLING_RATE, 2);
+		return this.read(2).getShort();
+
+	}
+	
+	/**
+	 * Reads 32 bits represented by a {@link Integer}.
+	 * @return the read {@link Integer}
+	 * @throws IOException
+	 */
+	public int read32() throws IOException {
+		this.waitForInput(this.DEFAULT_POLLING_RATE, 4);
+		return this.read(4).getInt();
+
+	}
+	
+	/**
+	 * Reads 64 bits represented by a {@link Long}.
+	 * @return the read {@link Long}
+	 * @throws IOException
+	 */
+	public long read64() throws IOException {
+		this.waitForInput(this.DEFAULT_POLLING_RATE, 8);
+		return this.read(8).getLong();
+		
+	}
+	
+	/**
+	 * Reads the given number of bytes and returns them wrapped in a {@link ByteBuffer} object.
+	 * @param bytes the number of bytes that should be read
+	 * @return the read bytes wrapped in a {@link ByteBuffer} object
+	 * @throws IOException
+	 */
+	public ByteBuffer read(int bytes) throws IOException {
+		//Creating array to store read data
+		byte[] buf = new byte[bytes];
+		
+		//Readng data
+		this.getInputStream().read(buf, 0, bytes);
+		
+		//Convert to byteBuffer and return
+		return ByteBuffer.wrap(buf);
+		
+	}
+	
 }
