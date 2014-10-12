@@ -25,6 +25,7 @@ public class Main {
 		ProfileManager pManager = new ProfileManager();
 		
 		ArduinoCommunicator arduinoCom = new ArduinoCommunicator(sManager.getCurrentSettings().getSerialInterfaceSelected());
+		arduinoCom.updateSettings(sManager.getCurrentSettings());
 		
 		Server server = new Server();
 

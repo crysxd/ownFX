@@ -72,6 +72,7 @@ public class SettingsManager extends AbstractHandler {
 		} else if(target.equals(this.URL_SAVE_SETTINGS)) {
 			String newSettings = request.getParameter("settings");
 			this.currentSettings = Settings.readSettings(newSettings);
+			this.currentSettings.save(this.SETTINGS_SAVE_LOCATION);
 			answer = "";
 			
 		}
