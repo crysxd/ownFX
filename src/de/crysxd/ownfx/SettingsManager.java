@@ -2,6 +2,7 @@ package de.crysxd.ownfx;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 
@@ -42,7 +43,7 @@ public class SettingsManager extends AbstractHandler {
 				this.currentSettings.setSerialInterfaceSelected(this.currentSettings.getSerialInterfaces()[0]);
 			
 			try {
-				this.currentSettings.save(this.SETTINGS_SAVE_LOCATION);
+				this.save();
 				Desktop.getDesktop().browse(new URI("http://localhost/settings.html"));
 				
 			} catch (Exception f) {
@@ -54,6 +55,11 @@ public class SettingsManager extends AbstractHandler {
 		
 		this.currentSettings.updateAvailableSerialInterfaces();
 		
+	}
+	
+	public void save() throws FileNotFoundException, IOException {
+		this.currentSettings.save(this.SETTINGS_SAVE_LOCATION);
+
 	}
 	
 	public Settings getCurrentSettings() {
@@ -72,7 +78,7 @@ public class SettingsManager extends AbstractHandler {
 		} else if(target.equals(this.URL_SAVE_SETTINGS)) {
 			String newSettings = request.getParameter("settings");
 			this.currentSettings = Settings.readSettings(newSettings);
-			this.currentSettings.save(this.SETTINGS_SAVE_LOCATION);
+			this.save();
 			answer = "";
 			
 		}
