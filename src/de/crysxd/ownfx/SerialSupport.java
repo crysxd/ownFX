@@ -8,20 +8,42 @@ import java.util.List;
 
 public class SerialSupport {
 	
-	public static String[] getSerialInterfaces() {
+	public static List<CommPortIdentifier> getSerialInterfaces() {
+		List<CommPortIdentifier> ports = new ArrayList<CommPortIdentifier>();
+		Enumeration<?> portEnum = CommPortIdentifier.getPortIdentifiers();
 		
-		List<String> ports = new ArrayList<String>();
-		Enumeration<?> portIdentifiers = CommPortIdentifier.getPortIdentifiers();
-		
-		while (portIdentifiers.hasMoreElements()) {
-		    CommPortIdentifier pid = (CommPortIdentifier) portIdentifiers.nextElement();
-		    if(pid.getPortType() == CommPortIdentifier.PORT_SERIAL){
-		        ports.add(pid.getName());
-		        
-		    }
+		while (portEnum.hasMoreElements()) {
+		    ports.add((CommPortIdentifier) portEnum.nextElement());
+		    
 		}
 		
-		return ports.toArray(new String[ports.size()]);
+		return ports;
 	}
 	
+	public static List<String> getSerialInterfaceNames() {
+		List<CommPortIdentifier> ports = SerialSupport.getSerialInterfaces();
+		ArrayList<String> portNames = new ArrayList<String>();
+		
+		for(CommPortIdentifier c : ports) {
+			portNames.add(c.getName());
+		
+		}
+		
+		return portNames;
+		
+	}
+	
+	public static CommPortIdentifier getSerialInterface(String name) {
+		List<CommPortIdentifier> ports = SerialSupport.getSerialInterfaces();
+		
+		for(CommPortIdentifier c : ports) {
+			if(c.getName().equalsIgnoreCase(name)) {
+				return c;
+				
+			}
+		}
+		
+		return null;
+		
+	}
 }

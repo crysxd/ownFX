@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class Settings {
 	
@@ -46,7 +47,8 @@ public class Settings {
 	}
 	
 	public void updateAvailableSerialInterfaces() {
-		this.serialInterfaces = SerialSupport.getSerialInterfaces();
+		List<String> interfaces = SerialSupport.getSerialInterfaceNames();
+		this.serialInterfaces = interfaces.toArray(new String[interfaces.size()]);
 		
 	}
 	
