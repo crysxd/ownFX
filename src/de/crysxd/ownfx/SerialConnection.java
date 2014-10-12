@@ -26,6 +26,14 @@ public class SerialConnection {
 	// The OutputStream over which data can be send
 	private final OutputStream OUTPUT;
 	
+	/**
+	 * Creates a new {@link SerialConnection} on the given serial port with the given baud rate.
+	 * @param portName the name of the serial port on which the connection should be opened.
+	 * @param baud the baud rate which should be used for the connection
+	 * @throws PortInUseException
+	 * @throws UnsupportedCommOperationException
+	 * @throws IOException
+	 */
 	public SerialConnection(String portName, int baud) throws 
 		PortInUseException, UnsupportedCommOperationException, IOException {
 		// Get the port identifier
