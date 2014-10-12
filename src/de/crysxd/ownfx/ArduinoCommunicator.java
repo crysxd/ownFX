@@ -4,6 +4,7 @@ import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.naming.CommunicationException;
 
@@ -12,10 +13,14 @@ public class ArduinoCommunicator {
 	//The serial connection to communicate with the Arduino
 	private final SerialConnection MY_CONNECTION;
 	
-	private final int TRANSMISSION_STATE_DONE 	= 0;
-	private final int TRANSMISSION_STATE_READY	= 1;
-	private final int TRANSMISSION_STATE_ERROR 	= 10;
-
+	private final byte TRANSMISSION_STATE_DONE 			= 0;
+	private final byte TRANSMISSION_STATE_READY			= 1;
+	private final byte TRANSMISSION_STATE_ERROR			= 10;
+	
+	private final byte TRANSMISSION_TASK_GET_PROFILE_ID = 0;
+	private final byte TRANSMISSION_TASK_SET_PROFILE    = 1;
+	private final byte TRANSMISSION_TASK_GET_SETTINGS   = 2;
+	private final byte TRANSMISSION_TASK_SET_SETTINGS   = 3;
 	
 	/**
 	 * Creates a new {@link ArduinoCommunicator} instance to communicate with the Arduino board connected
@@ -60,11 +65,6 @@ public class ArduinoCommunicator {
 		
 	}
 	
-	private void waitForInput() throws IOException {
-		this.waitForInput(1000000);
-		
-	}
-	
 	private void waitForDone() throws CommunicationException, IOException  {
 		this.waitFor(this.TRANSMISSION_STATE_DONE);
 		
@@ -75,39 +75,16 @@ public class ArduinoCommunicator {
 
 	}
 	
-	private void waitFor(int what) throws CommunicationException, IOException {
-		this.waitForInput();
+	private void waitFor(byte what) throws CommunicationException, IOException {
+		this.MY_CONNECTION.waitForInput();
 		
-		int read = 0;
-		if((read = this.MY_CONNECTION.getInputStream().read()) != what) {
+		byte read = 0;
+		if((read = this.MY_CONNECTION.read8()) != what) {
 			throw new CommunicationException("Waited for " + what + ", received " + read);
 			
 		}
 	}
 	
-	private void waitForInput(long pollingIntervalNs) throws IOException {
-		/*
-		 * IMPORTANT NOTE
-		 * =============================================================================
-		 * Polling is used here because using Locks/Conditions and the provided Listener
-		 * Interface is causing a fatal JRE Error crashing the program.
-		 * To provide instant feedback about new data we need to use busy waiting in 
-		 * #waitNanos. Thread.sleep(0) would need about 15ms to 25ms under Windows due to 
-		 * content switching and is therefore a heavy bottleneck when reading big amounts
-		 * of data. 
-		 */
-		while(this.MY_CONNECTION.getInputStream().available() == 0) {
-			this.waitNanos(pollingIntervalNs);
-			
-		}
-	}
-	
-	private void waitNanos(long nanoTime) {
-		long start = System.nanoTime();
-		while(start+nanoTime >= System.nanoTime());
-		
-	}
-
 	public void sendSettings(Settings s) {
 		throw new RuntimeException("Not implemented!");
 
@@ -119,13 +96,70 @@ public class ArduinoCommunicator {
 	}
 	
 	public long getCurrentProfileId() {
-		throw new RuntimeException("Not implemented!");
+		long currentProfileId = 0;
+		
+		try {
+			//Send request
+			System.out.println("Send request...");
+			this.sendTask(this.TRANSMISSION_TASK_GET_PROFILE_ID, new byte[0]);
+
+			//Read 8 bytes
+			System.out.println("Reading...");
+			currentProfileId = this.MY_CONNECTION.read64();
+
+			//Wait for Done signal
+			System.out.println("Waiting for done...");
+			this.waitForDone();
+			
+		} catch (CommunicationException e) {
+			e.printStackTrace();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return currentProfileId;
 		
 	}
 	
 	public void updateSettings(Settings s) {
 		throw new RuntimeException("Not implemented!");
 
+	}
+	
+	private void sendTask(byte taskId, byte[] data) throws IOException, CommunicationException {
+		OutputStream out = this.MY_CONNECTION.getOutputStream();
+		
+		//Check if the array is too long
+		if(data.length > 65536) {
+			throw new RuntimeException("Data array is to large. Max: 65536 Byte");
+			
+		}
+		
+		//Send task and transmission length
+		System.out.println("Writing task...");
+		out.write(taskId);
+		System.out.println("Writing data length (" + data.length + ")...");
+		out.write(0);
+		out.write(0);
+		
+		//Receive the buffer size
+		System.out.println("Waiting for buffer size...");
+		byte bufferSize = this.MY_CONNECTION.read8();
+		System.out.println("Buffer size is " + bufferSize);
+		
+		//Send data
+		short sendBytes = 0;
+		while(sendBytes < data.length) {
+			System.out.println("Sending " + sendBytes + " to " + (sendBytes + bufferSize) + "...");
+			this.waitForRady();
+			out.write(data, sendBytes, bufferSize);
+			sendBytes += bufferSize;
+			
+		}
+		
+		System.out.println("Waiting for done...");
+		this.waitForDone();
 	}
 	
 	public void close() {
