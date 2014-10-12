@@ -25,8 +25,10 @@ public class Main {
 		ProfileManager pManager = new ProfileManager();
 		
 		ArduinoCommunicator arduinoCom = new ArduinoCommunicator(sManager.getCurrentSettings().getSerialInterfaceSelected());
-		arduinoCom.updateSettings(sManager.getCurrentSettings());
 		
+		arduinoCom.updateSettings(sManager.getCurrentSettings());
+		sManager.save();
+
 		Server server = new Server();
 
 		//create and add Connector for given port
