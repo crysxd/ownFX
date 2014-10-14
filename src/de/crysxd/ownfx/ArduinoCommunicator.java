@@ -3,10 +3,13 @@ package de.crysxd.ownfx;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
 
 import javax.naming.CommunicationException;
 
@@ -15,9 +18,9 @@ public class ArduinoCommunicator {
 	//The serial connection to communicate with the Arduino
 	private final SerialConnection MY_CONNECTION;
 	
-	private final byte TRANSMISSION_STATE_DONE 			= 0;
-	private final byte TRANSMISSION_STATE_READY			= 1;
-	private final byte TRANSMISSION_STATE_ERROR			= 10;
+	private final byte TRANSMISSION_STATE_DONE 			= 17;
+	private final byte TRANSMISSION_STATE_READY			= 18;
+	private final byte TRANSMISSION_STATE_ERROR			= 19;
 	
 	private final byte TRANSMISSION_TASK_GET_PROFILE_ID = 0;
 	private final byte TRANSMISSION_TASK_SET_PROFILE    = 1;
@@ -89,24 +92,12 @@ public class ArduinoCommunicator {
 	
 	public void sendSettings(Settings s) {
 		try {
-			//Send request
-			System.out.println("Send request...");
-			
-			//Create data
-			byte[] buf = new byte[4];
-			buf[0] = 40;
-			buf[1] = 41;
-			buf[2] = 42;
-			buf[3] = 43;
+			//Convert int in 2 bytes
+			int ledCount[] = SerialSupport.toLittleEndianBytes(s.getLedCount(), 2);
 			
 			//Send
-			this.sendTask(this.TRANSMISSION_TASK_GET_INFO, buf);
+			this.sendTask(this.TRANSMISSION_TASK_SET_SETTINGS, s.getSystemBrightness(), s.getNeopixlesPin(), ledCount[0], ledCount[1]);
 			
-			System.out.println("" + this.MY_CONNECTION.read8());
-			System.out.println("" + this.MY_CONNECTION.read8());
-			System.out.println("" + this.MY_CONNECTION.read8());
-			System.out.println("" + this.MY_CONNECTION.read8());
-
 		} catch (CommunicationException e) {
 			e.printStackTrace();
 			
@@ -127,7 +118,7 @@ public class ArduinoCommunicator {
 		try {
 			//Send request
 			System.out.println("Send request...");
-			this.sendTask(this.TRANSMISSION_TASK_GET_PROFILE_ID, new byte[0]);
+			this.sendTask(this.TRANSMISSION_TASK_GET_PROFILE_ID);
 
 			//Read 8 bytes
 			System.out.println("Reading...");
@@ -152,7 +143,7 @@ public class ArduinoCommunicator {
 		try {
 			//Send request
 			System.out.println("Send request...");
-			this.sendTask(this.TRANSMISSION_TASK_GET_INFO, new byte[0]);
+			this.sendTask(this.TRANSMISSION_TASK_GET_INFO);
 
 			//Read 8 bytes
 			System.out.println("Reading...");
@@ -172,7 +163,7 @@ public class ArduinoCommunicator {
 		}
 	}
 	
-	private void sendTask(byte taskId, byte[] data) throws IOException, CommunicationException {
+	private void sendTask(byte taskId, int... data) throws IOException, CommunicationException {
 		OutputStream out = this.MY_CONNECTION.getOutputStream();
 		
 		//Check if the array is too long

@@ -1,4 +1,5 @@
-#include <EEPROM.h>
+#include <EEPROMex.h>
+#include <EEPROMVar.h>
 #include <stdint>
 
 #define EEPROM_CURRENT_PROFILE_START     64
@@ -13,9 +14,9 @@
 #define TRANSMISSION_TASK_GET_INFO             2
 #define TRANSMISSION_TASK_SET_SETIINGS         3
 
-#define TRANSMISSION_STATE_DONE           0
-#define TRANSMISSION_STATE_READY          1
-#define TRANSMISSION_STATE_ERROR         10
+#define TRANSMISSION_STATE_DONE          17
+#define TRANSMISSION_STATE_READY         18
+#define TRANSMISSION_STATE_ERROR         19
 
 #if (RAMEND < 1000)
     #define SERIAL_BUFFER_SIZE 16
@@ -23,24 +24,20 @@
     #define SERIAL_BUFFER_SIZE 64
 #endif
 
-
-int led = 13;
-
 void setup() {
   //Beginn Serial Communication
   Serial.begin(9600);
-  
+        
   //If the initialise flag is exactly 42, this application was used before and is initialised
   //If not, we must set some settings
   if(EEPROM.read(EEPROM_INITIALISED_FLAG) != 42) {
     Serial.println("INIT");
      //Set the current profile id to zero
-     int64_t buf = 0;
-     copyToEEPROM(&buf, 8, EEPROM_CURRENT_PROFILE_ID);
+     int64_t v = 0;
+     EEPROMwrite64(EEPROM_CURRENT_PROFILE_ID, &v);
      
      //Set the led Count to 60
-     int16_t buf2 = 60;
-     copyToEEPROM(&buf2, 2, EEPROM_LED_COUNT);
+     EEPROM.writeInt(EEPROM_LED_COUNT, 60);
      
      //Set the current system brightness to max
      EEPROM.write(EEPROM_CURRENT_BRIGHTNESS, 255);
@@ -108,9 +105,8 @@ void sendCurrentProfileId() {
   sendDone();
   
   //Copy from eeprom to serial
-  for(int16_t address=EEPROM_CURRENT_PROFILE_ID; address<EEPROM_CURRENT_PROFILE_ID+8; address++) {
-    Serial.write(EEPROM.read(address));
-  }
+  int64_t id = EEPROMread64(EEPROM_CURRENT_PROFILE_ID);
+  writeToSerial(&id, 8);
   
   //Send done to signal of all data send
   sendDone();
@@ -118,27 +114,20 @@ void sendCurrentProfileId() {
 }
 
 void receiveProfile(int16_t transmissionLength) {
-  
+
 }
 
 void receiveSettings(int16_t transmissionLength) {
-  //Read data
-  int8_t brightness = read8();
-  int8_t neopixlesPin = read8();
-  int16_t ledCount = read16();
-  
-  //Save data
-  //copyToEEPROM(&ledCount, 2, EEPROM_LED_COUNT);
-  //EEPROM.write(EEPROM_CURRENT_BRIGHTNESS, brightness);
-  //EEPROM.write(EEPROM_NEOPIXLES_PIN, neopixlesPin);
-  
+  //Read and Save data
+  EEPROM.write(EEPROM_CURRENT_BRIGHTNESS, read8());
+  EEPROM.write(EEPROM_NEOPIXLES_PIN, read8());
+  EEPROM.writeInt(EEPROM_LED_COUNT, read16());
+
   //Send done
   sendDone();
-  
-  Serial.write(brightness);
-  Serial.write(neopixlesPin);
-  writeToSerial(&ledCount, 2);
+
 }
+
 
 
 /*
@@ -211,11 +200,25 @@ void writeToSerial(void* source, int16_t length) {
   } 
 }
 
-void copyToEEPROM(void* source, int16_t length, int16_t eepromAddress) {
-  char* sourceP = (char*) source;
+/*
+ *======================================================================================
+ * Low Level EEPROM
+ *======================================================================================
+ */
+void EEPROMwrite64(int16_t eepromAddress, int64_t* value) {
+  int32_t* source = (int32_t*) value;
   
-  for(int16_t i=0; i<length; i++) {
-    EEPROM.write(eepromAddress + i, *(sourceP + i));
-    
-  } 
+  EEPROM.writeLong(eepromAddress, *source);
+  EEPROM.writeLong(eepromAddress+4, *(source+1));
+
+}
+
+int64_t EEPROMread64(int16_t eepromAddress) {
+  int32_t buf[2];
+  
+  buf[0] = EEPROM.readLong(eepromAddress);
+  buf[1] = EEPROM.readLong(eepromAddress+4);
+  
+  return *((int64_t*) buf);
+  
 }
