@@ -71,7 +71,7 @@ public class Main {
 		System.out.println("Send!");
 		
 		System.out.println("Sending profile");
-		arduinoCom.sendProfile(pManager.getProfiles().get(0));
+		arduinoCom.sendProfile(pManager.getActiveProfile());
 		System.out.println("Send!");
 		
 	}
