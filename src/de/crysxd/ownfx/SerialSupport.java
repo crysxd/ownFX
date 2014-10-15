@@ -47,11 +47,11 @@ public class SerialSupport {
 		
 	}
 	
-	public static int[] toLittleEndianBytes(long value, int bytesToUse) {
-		int bytes[] = new int[bytesToUse];
+	public static byte[] toLittleEndianBytes(long value, int bytesToUse) {
+		byte bytes[] = new byte[bytesToUse];
 		
 		for(int i=0; i<bytesToUse; i++)
-			bytes[i] = (int) (value >> (8 * i));
+			bytes[i] = (byte) (value >> (8 * i));
 		
 		return bytes;
 		
