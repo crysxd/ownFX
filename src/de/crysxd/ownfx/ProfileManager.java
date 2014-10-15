@@ -62,6 +62,16 @@ public class ProfileManager extends AbstractHandler {
 		}		
 	}
 	
+	public Profile getActiveProfile() {
+		return this.getProfile(this.activeProfileId);
+		
+	}
+	
+	public void setActiveProfile(long id) {
+		this.activeProfileId = id;
+		
+	}
+	
 	private synchronized Profile getProfile(long id) {
 		for(Profile p: this.PROFILES) {
 			if(p.getId() == id) {
