@@ -25,7 +25,8 @@ public class Main {
 		ProfileManager pManager = new ProfileManager();
 		
 		ArduinoCommunicator arduinoCom = new ArduinoCommunicator(sManager.getCurrentSettings().getSerialInterfaceSelected());
-		
+		pManager.setActiveProfile(arduinoCom.getCurrentProfileId());
+
 		arduinoCom.updateSettings(sManager.getCurrentSettings());
 		sManager.save();
 
@@ -67,6 +68,10 @@ public class Main {
 		
 		System.out.println("Sending settings");
 		arduinoCom.sendSettings(sManager.getCurrentSettings());
+		System.out.println("Send!");
+		
+		System.out.println("Sending profile");
+		arduinoCom.sendProfile(pManager.getProfiles().get(0));
 		System.out.println("Send!");
 		
 	}
