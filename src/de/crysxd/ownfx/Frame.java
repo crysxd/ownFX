@@ -1,5 +1,7 @@
 package de.crysxd.ownfx;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Vector;
 
@@ -27,5 +29,15 @@ public class Frame {
 	
 	public List<ColorStop> getColorStops() {
 		return colorStops;
+	}
+
+	public void serializeForC(OutputStream out) throws IOException {
+		out.write(SerialSupport.toLittleEndianBytes(this.getTransitionTime(), 2));
+		out.write(SerialSupport.toLittleEndianBytes(this.getPauseTime(), 2));
+		out.write(SerialSupport.toLittleEndianBytes(this.getColorStops().size(), 1));
+		
+		for(ColorStop c: this.getColorStops())
+			c.serializeForC(out);
+		
 	}
 }

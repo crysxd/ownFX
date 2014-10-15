@@ -1,6 +1,8 @@
 package de.crysxd.ownfx;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Type;
 
 import com.google.gson.JsonDeserializationContext;
@@ -66,5 +68,14 @@ public class ColorStop {
 			return json;
 			
 		}
+	}
+
+
+	public void serializeForC(OutputStream out) throws IOException {
+		out.write(SerialSupport.toLittleEndianBytes(this.getLedIndex(), 2));
+		out.write(SerialSupport.toLittleEndianBytes(this.getColor().getRed(), 1));
+		out.write(SerialSupport.toLittleEndianBytes(this.getColor().getGreen(), 1));
+		out.write(SerialSupport.toLittleEndianBytes(this.getColor().getBlue(), 1));
+		
 	}
 }

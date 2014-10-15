@@ -1,5 +1,6 @@
 package de.crysxd.ownfx;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -39,6 +40,19 @@ public class Profile {
 	
 	public List<Frame> getFrames() {
 		return frames;
+		
+	}
+	
+	public byte[] serializeForC() throws IOException {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		
+		bos.write(SerialSupport.toLittleEndianBytes(this.getId(), 8));
+		bos.write(SerialSupport.toLittleEndianBytes(this.getFrames().size(), 1));
+		
+		for(Frame f : this.frames)
+			f.serializeForC(bos);
+		
+		return bos.toByteArray();
 		
 	}
 	
