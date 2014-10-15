@@ -2,12 +2,13 @@
 #include <EEPROMVar.h>
 #include <stdint>
 
-#define EEPROM_CURRENT_PROFILE_START     64
-#define EEPROM_CURRENT_PROFILE_ID         0 // 8 Byte
-#define EEPROM_CURRENT_BRIGHTNESS         8 // 1 Byte
-#define EEPROM_INITIALISED_FLAG           9 // 1 Byte
-#define EEPROM_NEOPIXLES_PIN             10 // 1 Byte
-#define EEPROM_LED_COUNT                 11 // 2 Byte
+#define EEPROM_CURRENT_PROFILE_START       64
+#define EEPROM_CURRENT_PROFILE_ID           0 // 8 Byte
+#define EEPROM_CURRENT_BRIGHTNESS           8 // 1 Byte
+#define EEPROM_INITIALISED_FLAG             9 // 1 Byte
+#define EEPROM_NEOPIXLES_PIN               10 // 1 Byte
+#define EEPROM_LED_COUNT                   11 // 2 Byte
+#define EEPROM_CURRENT_PROFILE_FRAME_COUNT 13 // 1 Byte
 
 #define TRANSMISSION_TASK_GET_PROFILE_ID       0
 #define TRANSMISSION_TASK_SET_PROFILE          1
@@ -16,7 +17,7 @@
 
 #define TRANSMISSION_STATE_DONE          17
 #define TRANSMISSION_STATE_READY         18
-#define TRANSMISSION_STATE_ERROR         19
+#define TRANSMISSION_STATE_ERROR         69 // 'E'
 
 #if (RAMEND < 1000)
     #define SERIAL_BUFFER_SIZE 16
@@ -71,6 +72,10 @@ void serialEvent() {
   
   //Read the length of the complete transmission
   int16_t transmissionLength = read16();
+  writeToSerial(&transmissionLength, 2);
+  
+  //DEBUGGING REMOVE
+  EEPROM.setMaxAllowedWrites(256);
 
   //Send the size of the serial buffer which the partner should use as package size
   Serial.write(SERIAL_BUFFER_SIZE);
@@ -114,7 +119,39 @@ void sendCurrentProfileId() {
 }
 
 void receiveProfile(int16_t transmissionLength) {
-
+  int64_t id = read64();
+  int8_t frameCount = read8();
+  
+  EEPROMwrite64(EEPROM_CURRENT_PROFILE_ID, &id);
+  EEPROM.write(EEPROM_CURRENT_PROFILE_FRAME_COUNT, frameCount);
+  
+  int16_t receivedCount = 9;
+  transmissionLength -= receivedCount;
+  
+  int64_t checksum = 0;
+  int8_t buffer;
+  
+  while(!EEPROM.isReady());
+  
+  for(int16_t i=0; i<transmissionLength; i++) {
+    if(receivedCount++ == SERIAL_BUFFER_SIZE) {
+      sendReady();
+      receivedCount = 1;
+      
+    }
+    
+    buffer = read8();
+    checksum += buffer;
+    EEPROM.write(EEPROM_CURRENT_PROFILE_START+i, buffer);
+    
+  }
+  
+  sendDone();
+  
+  writeToSerial(&checksum, 8);
+  
+  sendDone();
+  
 }
 
 void receiveSettings(int16_t transmissionLength) {

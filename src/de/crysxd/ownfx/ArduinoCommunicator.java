@@ -3,13 +3,9 @@ package de.crysxd.ownfx;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
 
-import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.ArrayList;
 
 import javax.naming.CommunicationException;
 
@@ -20,7 +16,7 @@ public class ArduinoCommunicator {
 	
 	private final byte TRANSMISSION_STATE_DONE 			= 17;
 	private final byte TRANSMISSION_STATE_READY			= 18;
-	private final byte TRANSMISSION_STATE_ERROR			= 19;
+	private final byte TRANSMISSION_STATE_ERROR			= 69;
 	
 	private final byte TRANSMISSION_TASK_GET_PROFILE_ID = 0;
 	private final byte TRANSMISSION_TASK_SET_PROFILE    = 1;
@@ -76,7 +72,7 @@ public class ArduinoCommunicator {
 	}
 	
 	private void waitForRady() throws CommunicationException, IOException {
-		this.waitFor(this.TRANSMISSION_STATE_DONE);
+		this.waitFor(this.TRANSMISSION_STATE_READY);
 
 	}
 	
@@ -93,10 +89,10 @@ public class ArduinoCommunicator {
 	public void sendSettings(Settings s) {
 		try {
 			//Convert int in 2 bytes
-			int ledCount[] = SerialSupport.toLittleEndianBytes(s.getLedCount(), 2);
+			byte ledCount[] = SerialSupport.toLittleEndianBytes(s.getLedCount(), 2);
 			
 			//Send
-			this.sendTask(this.TRANSMISSION_TASK_SET_SETTINGS, s.getSystemBrightness(), s.getNeopixlesPin(), ledCount[0], ledCount[1]);
+			this.sendTask(this.TRANSMISSION_TASK_SET_SETTINGS, (byte) s.getSystemBrightness(), (byte) s.getNeopixlesPin(), ledCount[0], ledCount[1]);
 			
 		} catch (CommunicationException e) {
 			e.printStackTrace();
@@ -107,9 +103,32 @@ public class ArduinoCommunicator {
 		}
 	}
 	
-	public void sendProfile(Profile p) {
-		throw new RuntimeException("Not implemented!");
-
+	public void sendProfile(Profile p) throws CommunicationException, IOException {
+		byte[] profileBytes = p.serializeForC();
+		long checksum = 0;
+		
+		for(int i=9; i<profileBytes.length; i++) {
+			checksum += profileBytes[i];
+			
+		}
+		
+		this.sendTask(this.TRANSMISSION_TASK_SET_PROFILE, profileBytes);
+		
+		long checksumControl = this.MY_CONNECTION.read64();
+		this.waitForDone();
+		
+		if(checksum != checksumControl) {
+			System.out.println("Checksums not matching! " + checksum + " <> " + checksumControl);
+			try {
+				Thread.sleep(5000);
+				
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				
+			}
+			this.sendProfile(p);
+			
+		}
 	}
 	
 	public long getCurrentProfileId() {
@@ -163,7 +182,7 @@ public class ArduinoCommunicator {
 		}
 	}
 	
-	private void sendTask(byte taskId, int... data) throws IOException, CommunicationException {
+	private void sendTask(byte taskId, byte... data) throws IOException, CommunicationException {
 		OutputStream out = this.MY_CONNECTION.getOutputStream();
 		
 		//Check if the array is too long
@@ -177,8 +196,10 @@ public class ArduinoCommunicator {
 		out.write(taskId);
 		System.out.println("Writing data length (" + data.length + ")...");
 		//FIXME send correct length
-		out.write(0);
-		out.write(0);
+		out.write(SerialSupport.toLittleEndianBytes(data.length, 2));
+		out.flush();
+		
+		System.out.println("Length: " + this.MY_CONNECTION.read16());
 		
 		//Receive the buffer size
 		System.out.println("Waiting for buffer size...");
@@ -191,7 +212,16 @@ public class ArduinoCommunicator {
 			out.write(data[sendBytes++]);
 			
 			if(sendBytes%bufferSize == 0) {
+				try {
 				this.waitForRady();
+				}catch(CommunicationException e) {
+					while(true) {
+						this.MY_CONNECTION.waitForInput();
+						System.out.print((char) this.MY_CONNECTION.getInputStream().read());
+					}		
+				}
+					
+				System.out.println("Received Ready");
 				
 			}
 		}
