@@ -37,7 +37,7 @@ void setup() {
   if(EEPROM.read(EEPROM_INITIALISED_FLAG) != 42) {
     Serial.println("INIT");
      //Set the current profile id to zero
-     int64_t v = 0;
+     uint64_t v = 0;
      EEPROMwrite64(EEPROM_CURRENT_PROFILE_ID, &v);
      
      //Set the led Count to 60
@@ -56,16 +56,16 @@ void setup() {
   
   //Create Neopixels strip and init
   strip = &Adafruit_NeoPixel((uint16_t)60, (uint8_t) 6,(uint8_t)( NEO_GRB + NEO_KHZ800));
-  strip.begin();
+  strip->begin();
   
   //Apply red to green gradient
   for(int i=0; i<60; i++) {
-    strip.setPixelColor(i, 255*(60-i)/60, 255*i/60, 0);
+    strip->setPixelColor(i, 255*(60-i)/60, 255*i/60, 0);
 
   }
 
   //show the gradient
-  strip.show();
+  strip->show();
   
   //Tell host boot is complete
   sendDone();
@@ -84,10 +84,10 @@ void loop() {
  */
 void serialEvent() {
   //Read the task that should be performed
-  int8_t task = read8();
+  uint8_t task = read8();
   
   //Read the length of the complete transmission
-  int16_t transmissionLength = read16();
+  uint16_t transmissionLength = read16();
   writeToSerial(&transmissionLength, 2);
   
   //DEBUGGING REMOVE
@@ -110,7 +110,7 @@ void sendInfo() {
   sendDone();
 
   //Write the ramsize
-  int16_t buf = RAMEND + 1;
+  uint16_t buf = RAMEND + 1;
   writeToSerial(&buf, 2);
   
   //Write the eeprom size
@@ -126,7 +126,7 @@ void sendCurrentProfileId() {
   sendDone();
   
   //Copy from eeprom to serial
-  int64_t id = EEPROMread64(EEPROM_CURRENT_PROFILE_ID);
+  uint64_t id = EEPROMread64(EEPROM_CURRENT_PROFILE_ID);
   writeToSerial(&id, 8);
   
   //Send done to signal of all data send
@@ -135,21 +135,21 @@ void sendCurrentProfileId() {
 }
 
 void receiveProfile(int16_t transmissionLength) {
-  int64_t id = read64();
-  int8_t frameCount = read8();
+  uint64_t id = read64();
+  uint8_t frameCount = read8();
   
   EEPROMwrite64(EEPROM_CURRENT_PROFILE_ID, &id);
   EEPROM.write(EEPROM_CURRENT_PROFILE_FRAME_COUNT, frameCount);
   
-  int16_t receivedCount = 9;
+  uint16_t receivedCount = 9;
   transmissionLength -= receivedCount;
   
-  int64_t checksum = 0;
-  int8_t buffer;
+  uint64_t checksum = 0;
+  uint8_t buffer;
   
   while(!EEPROM.isReady());
   
-  for(int16_t i=0; i<transmissionLength; i++) {
+  for(uint16_t i=0; i<transmissionLength; i++) {
     if(receivedCount++ == SERIAL_BUFFER_SIZE) {
       sendReady();
       receivedCount = 1;
@@ -203,51 +203,51 @@ void sendError() {
 
 }
 
-int8_t read8() {
-  int8_t buffer = 0;
+uint8_t read8() {
+  uint8_t buffer = 0;
   read(1, (char*)&buffer);
   
   return buffer;
 }
 
-int16_t read16() {
-  int16_t buffer = 0;
+uint16_t read16() {
+  uint16_t buffer = 0;
   read(2, (char*)&buffer);
   
   return buffer;
 }
 
-int32_t read32() {
-  int32_t buffer = 0;
+uint32_t read32() {
+  uint32_t buffer = 0;
   read(4, (char*)&buffer);
   
   return buffer;
 }
 
-int64_t read64() {
-  int64_t buffer = 0;
+uint64_t read64() {
+  uint64_t buffer = 0;
   read(8, (char*)&buffer);
   
   return buffer;
 }
 
-void read(int16_t length, char* target) {
-  for(int16_t i=0; i<length; i++) {
+void read(uint16_t length, char* target) {
+  for(uint16_t i=0; i<length; i++) {
      *(target+i) = readBlocking();
       
    }
 }
 
-int8_t readBlocking() {
+uint8_t readBlocking() {
   while(Serial.available() <= 0);
   return Serial.read();
   
 }
 
-void writeToSerial(void* source, int16_t length) {
+void writeToSerial(void* source, uint16_t length) {
   char* sourceP = (char*) source;
 
-  for(int16_t i=0; i<length; i++) {
+  for(uint16_t i=0; i<length; i++) {
     Serial.write(*(sourceP + i));
     
   } 
@@ -258,20 +258,20 @@ void writeToSerial(void* source, int16_t length) {
  * Low Level EEPROM
  *======================================================================================
  */
-void EEPROMwrite64(int16_t eepromAddress, int64_t* value) {
-  int32_t* source = (int32_t*) value;
+void EEPROMwrite64(uint16_t eepromAddress, uint64_t* value) {
+  uint32_t* source = (uint32_t*) value;
   
   EEPROM.writeLong(eepromAddress, *source);
   EEPROM.writeLong(eepromAddress+4, *(source+1));
 
 }
 
-int64_t EEPROMread64(int16_t eepromAddress) {
-  int32_t buf[2];
+uint64_t EEPROMread64(uint16_t eepromAddress) {
+  uint32_t buf[2];
   
   buf[0] = EEPROM.readLong(eepromAddress);
   buf[1] = EEPROM.readLong(eepromAddress+4);
   
-  return *((int64_t*) buf);
+  return *((uint64_t*) buf);
   
 }
