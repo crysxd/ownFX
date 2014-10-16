@@ -45,6 +45,13 @@ Adafruit_NeoPixel* strip       = NULL;
 struct Frame* currentFrame     = NULL;
 struct ColorStop** colorStops = NULL;
 uint8_t currentFrameIndex = 0;
+uint8_t* startR;
+uint8_t* startG;
+uint8_t* startB;
+uint8_t* stepR;
+uint8_t* stepG;
+uint8_t* stepB;
+uint16_t stepsUntilNextFrame = 0;
 
 void setup() {
   //Beginn Serial Communication
@@ -72,8 +79,12 @@ void setup() {
      
   }
   
+  //Load led count and neopixels pin
+  uint16_t ledCount = EEPROM.readInt(EEPROM_LED_COUNT);
+  uint8_t neopixelsPin = EEPROM.readInt(EEPROM_NEOPIXLES_PIN);
+  
   //Create Neopixels strip and init
-  strip = &Adafruit_NeoPixel((uint16_t)60, (uint8_t) 6,(uint8_t)( NEO_GRB + NEO_KHZ800));
+  strip = &Adafruit_NeoPixel(ledCount, neopixelsPin, NEO_GRB + NEO_KHZ800);
   strip->begin();
   
   //Apply red to green gradient
@@ -86,6 +97,14 @@ void setup() {
   strip->setBrightness(64);
   strip->show();
   
+  //Create arrays
+  startR = (uint8_t*) malloc(ledCount);
+  startG = (uint8_t*) malloc(ledCount);
+  startB = (uint8_t*) malloc(ledCount);
+  stepR = (uint8_t*) malloc(ledCount);
+  stepG = (uint8_t*) malloc(ledCount);
+  stepB = (uint8_t*) malloc(ledCount);
+
   //Load current profile
   applyProfile();
   
