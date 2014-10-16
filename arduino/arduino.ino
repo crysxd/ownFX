@@ -27,8 +27,8 @@
 #endif
 
 struct Frame {
-  uint16_t pauseTime;
   uint16_t transitionTime;
+  uint16_t pauseTime;
   uint8_t colorStopCount;  
 
 };
@@ -41,9 +41,10 @@ struct ColorStop {
 
 };
 
-Adafruit_NeoPixel* strip;
-struct Frame* currentFrame;
-struct ColorStops** colorStops;
+Adafruit_NeoPixel* strip       = NULL;
+struct Frame* currentFrame     = NULL;
+struct ColorStop** colorStops = NULL;
+uint8_t currentFrameIndex = 0;
 
 void setup() {
   //Beginn Serial Communication
@@ -82,7 +83,11 @@ void setup() {
   }
 
   //show the gradient
+  strip->setBrightness(64);
   strip->show();
+  
+  //Load current profile
+  applyProfile();
   
   //Tell host boot is complete
   sendDone();
@@ -91,6 +96,99 @@ void setup() {
 
 void loop() {
 
+}
+
+void applyProfile() {
+  currentFrameIndex = 0;
+  loadFrame(currentFrameIndex);
+
+}
+
+void loadFrame(uint8_t index) {
+  uint8_t i;
+  
+  //Create a Frame struct if not allocated
+  if(currentFrame == NULL) {
+    currentFrame = (struct Frame*) malloc(sizeof(struct Frame));
+    currentFrame->transitionTime = 0;
+    currentFrame->pauseTime =      0;
+    currentFrame->colorStopCount = 0;  
+  
+  }
+  
+  uint8_t availableColorStops = currentFrame->colorStopCount;
+  
+  //Init Frame address with the porfile start
+  uint16_t frameAddress = EEPROM_CURRENT_PROFILE_START;
+  
+  //Iterate over all Frames until the desired one
+  for(i=0; i<index; i++) {
+    //Read how many ColorStops the Frame contains and multiply it by the size of one ColorStop, add it to Address
+    frameAddress += EEPROM.read(frameAddress + 4) * sizeof(struct ColorStop);
+    //Add the size of one frameAddress
+    frameAddress += sizeof(struct Frame);
+    //Now frameAddress is the address of the next Frame
+       
+  }
+  
+  //frameAddress is now the address of the desired Frame
+  //Read the values
+  currentFrame->transitionTime = EEPROM.readInt(frameAddress);
+  currentFrame->pauseTime =      EEPROM.readInt(frameAddress+2);
+  currentFrame->colorStopCount = EEPROM.read(frameAddress+4);  
+  
+  /*
+  Serial.print("colorStopCount: ");
+  Serial.println(currentFrame->colorStopCount);
+  Serial.print("transitionTime: ");
+  Serial.println(currentFrame->transitionTime);
+  Serial.print("pauseTime: ");
+  Serial.println(currentFrame->pauseTime);
+  Serial.print("availableColorStops: ");
+  Serial.println(availableColorStops);
+  */
+  
+  //free all ColorStops
+  for(i=0; i<availableColorStops; i++) {
+    free(colorStops[i]);
+    
+  } 
+  
+  //free colorStops and allocate new
+  free(colorStops);
+  colorStops = (ColorStop**) malloc(sizeof(struct ColorStop*) * currentFrame->colorStopCount);
+  
+  //Serial.println("ColorStops: ");
+
+  //Load ColorStops
+  for(i=0; i<currentFrame->colorStopCount; i++) {
+    colorStops[i] = (ColorStop*) malloc(sizeof(struct ColorStop));
+    loadColorStop(i, frameAddress, colorStops[i]);
+    
+    /*
+    Serial.println(i);
+    Serial.print("  ledIndex: ");
+    Serial.println(colorStops[i]->ledIndex);
+    Serial.print("  r: ");
+    Serial.println(colorStops[i]->r);
+    Serial.print("  g: ");
+    Serial.println(colorStops[i]->g);
+    Serial.print("  b: ");
+    Serial.println(colorStops[i]->b);
+    */
+    
+  }
+}
+
+void loadColorStop(uint8_t index, uint16_t eepromFrameAddress, struct ColorStop* colorStop) {
+  eepromFrameAddress += sizeof(struct Frame);
+  eepromFrameAddress += sizeof(struct ColorStop) * index;
+  
+  colorStop->ledIndex = EEPROM.readInt(eepromFrameAddress);
+  colorStop->r = EEPROM.readInt(eepromFrameAddress+2);
+  colorStop->g = EEPROM.readInt(eepromFrameAddress+3);
+  colorStop->b = EEPROM.readInt(eepromFrameAddress+4);
+  
 }
 
 /*
