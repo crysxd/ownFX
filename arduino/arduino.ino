@@ -1,3 +1,4 @@
+#include <Adafruit_NeoPixel.h>
 #include <EEPROMex.h>
 #include <EEPROMVar.h>
 #include <stdint>
@@ -25,6 +26,8 @@
     #define SERIAL_BUFFER_SIZE 64
 #endif
 
+Adafruit_NeoPixel* strip;
+
 void setup() {
   //Beginn Serial Communication
   Serial.begin(9600);
@@ -50,7 +53,20 @@ void setup() {
      EEPROM.write(EEPROM_INITIALISED_FLAG, 42);
      
   }
- 
+  
+  //Create Neopixels strip and init
+  strip = &Adafruit_NeoPixel((uint16_t)60, (uint8_t) 6,(uint8_t)( NEO_GRB + NEO_KHZ800));
+  strip.begin();
+  
+  //Apply red to green gradient
+  for(int i=0; i<60; i++) {
+    strip.setPixelColor(i, 255*(60-i)/60, 255*i/60, 0);
+
+  }
+
+  //show the gradient
+  strip.show();
+  
   //Tell host boot is complete
   sendDone();
   
