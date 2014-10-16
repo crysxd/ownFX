@@ -26,7 +26,24 @@
     #define SERIAL_BUFFER_SIZE 64
 #endif
 
+struct Frame {
+  uint16_t pauseTime;
+  uint16_t transitionTime;
+  uint8_t colorStopCount;  
+
+};
+
+struct ColorStop {
+  uint16_t ledIndex;
+  uint8_t r;
+  uint8_t g;
+  uint8_t b;
+
+};
+
 Adafruit_NeoPixel* strip;
+struct Frame* currentFrame;
+struct ColorStops** colorStops;
 
 void setup() {
   //Beginn Serial Communication
