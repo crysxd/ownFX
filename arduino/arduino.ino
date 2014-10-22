@@ -89,7 +89,7 @@ void setup() {
   
   //Apply red to green gradient
   for(int i=0; i<60; i++) {
-    strip->setPixelColor(i, 255*(60-i)/60, 255*i/60, 0);
+    strip->setPixelColor(i, 0, 0, 255);
 
   }
 
@@ -110,7 +110,8 @@ void loop() {
 }
 
 void applyProfile() {
-  currentFrameIndex = 0;
+  currentFrameIndex = -1;
+ 
   loadNextAnimationStep();
 
 }
@@ -130,9 +131,8 @@ void loadNextAnimationStep() {
   //Load current Frame;  
   struct Frame* frame = NULL;
   struct ColorStop** colorStops = NULL;
-  loadFrame(0, &frame, &colorStops);
+  loadFrame(currentFrameIndex, &frame, &colorStops);
   
-  /*
   Serial.println("-------------------");
   Serial.print("colorStopCount: ");
   Serial.println(frame->colorStopCount);
@@ -156,8 +156,73 @@ void loadNextAnimationStep() {
   Serial.println(colorStops[1]->g);
   Serial.print("firstColorStop->b: ");
   Serial.println(colorStops[1]->b);
-  */
   
+  uint8_t r[60];
+  uint8_t g[60];
+  uint8_t b[60];
+  
+  //Create start arrays
+  calculateGradient(colorStops, frame->colorStopCount, r, g, b, 60);
+  
+  for(uint16_t i=0; i<60; i++) {
+    strip->setPixelColor(i, r[i], g[i], b[i]);
+    
+  }
+  
+  strip->show();
+  
+}
+
+void calculateGradient(struct ColorStop** colorStops, uint8_t colorStopCount, uint8_t* r, uint8_t* g, uint8_t* b, uint16_t ledCount) {
+  int16_t diffR, diffG, diffB;
+  float percent = 0;
+  uint8_t currentColorStop = -1;
+  
+  for(uint16_t led=0; led<ledCount; led++) {
+    if(led == 0 || led == colorStops[currentColorStop]->ledIndex) {
+      currentColorStop++;
+
+      diffR = colorStops[currentColorStop+1]->r - colorStops[currentColorStop]->r;
+      diffG = colorStops[currentColorStop+1]->g - colorStops[currentColorStop]->g;
+      diffB = colorStops[currentColorStop+1]->b - colorStops[currentColorStop]->b;
+    
+      /*
+      Serial.println("current:");
+      Serial.println(colorStops[currentColorStop]->r);
+      Serial.println(colorStops[currentColorStop]->g);
+      Serial.println(colorStops[currentColorStop]->b);
+      
+      Serial.println("next:");
+      Serial.println(colorStops[currentColorStop+1]->r);
+      Serial.println(colorStops[currentColorStop+1]->g);
+      Serial.println(colorStops[currentColorStop+1]->b);
+      
+      Serial.println("diffs:");
+      Serial.println(diffR);
+      Serial.println(diffG);
+      Serial.println(diffB);
+      */
+      
+    }
+   
+    percent = ((float)led - (float)colorStops[currentColorStop]->ledIndex) / ((float)colorStops[currentColorStop+1]->ledIndex - (float)colorStops[currentColorStop]->ledIndex);
+    r[led] = colorStops[currentColorStop]->r + diffR * percent;
+    g[led] = colorStops[currentColorStop]->g + diffG * percent;
+    b[led] = colorStops[currentColorStop]->b + diffB * percent;
+    
+    /*
+    Serial.print(led);
+    Serial.print(": ");
+    Serial.print(percent);
+    Serial.print(", ");
+    Serial.print(r[led]);
+    Serial.print(", ");
+    Serial.print(g[led]);
+    Serial.print(", ");
+    Serial.println(b[led]);
+    */
+    
+  } 
 }
 
 void loadFrame(uint8_t index, struct Frame** framePointer, struct ColorStop*** colorStopsPointer) {
