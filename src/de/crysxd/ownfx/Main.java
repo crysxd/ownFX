@@ -96,6 +96,12 @@ public class Main {
 	
 	public void createArduinoCommunicator() {
 		try {
+			if(arduinoCom != null)
+				try {
+					this.arduinoCom.close();
+					
+				} catch(Exception e) {}
+			
 			this.arduinoCom = new ArduinoCommunicator(this.sManager.getCurrentSettings().getSerialInterfaceSelected());
 			
 		} catch (Exception e) {
@@ -109,7 +115,6 @@ public class Main {
 	public void sendSettings() {
 		try {
 			this.arduinoCom.sendSettings(this.sManager.getCurrentSettings());
-			this.arduinoCom.close();
 			
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -124,6 +129,7 @@ public class Main {
 	public void sendSelectedProfile() {
 		try {
 			this.arduinoCom.sendProfile(this.pManager.getActiveProfile());
+			this.createArduinoCommunicator();
 			
 		} catch (Exception e) {
 			e.printStackTrace();

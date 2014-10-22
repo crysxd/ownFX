@@ -216,7 +216,8 @@ public class ProfileManager extends AbstractHandler {
 		this.PROFILES.add(p);
 		
 		if(apply) {
-			//FIXME Apply project
+			this.setActiveProfile(p.getId());
+			Main.getMain().sendSelectedProfile();
 			
 		}
 		
