@@ -94,7 +94,7 @@ void setup() {
   }
 
   //show the gradient
-  strip->setBrightness(EEPROM.read(EEPROM_CURRENT_BRIGHTNESS);
+  strip->setBrightness(EEPROM.read(EEPROM_CURRENT_BRIGHTNESS));
   strip->show();
 
   //Load current profile
