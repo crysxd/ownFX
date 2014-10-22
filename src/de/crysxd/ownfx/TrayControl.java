@@ -37,7 +37,7 @@ public class TrayControl implements ActionListener {
 		
 		//Create submenu for brightness
 		Menu submenu = new Menu("Brightness");
-		for(int i=0; i<=100; i+=25) {
+		for(int i=0; i<=100; i+=10) {
 			MenuItem mi = new MenuItem(i + "%");
 			this.MENU_BRIGTHNESS.put(i, mi);
 			submenu.add(mi);
