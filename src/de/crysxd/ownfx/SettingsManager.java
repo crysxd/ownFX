@@ -68,7 +68,7 @@ public class SettingsManager extends AbstractHandler {
 	}
 
 	@Override
-	public void handle(String target, Request baseRequest, HttpServletRequest request,
+	public synchronized void handle(String target, Request baseRequest, HttpServletRequest request,
 			HttpServletResponse response) throws IOException, ServletException {
 		String answer = null;
 		
@@ -79,6 +79,7 @@ public class SettingsManager extends AbstractHandler {
 			String newSettings = request.getParameter("settings");
 			this.currentSettings = Settings.readSettings(newSettings);
 			this.save();
+			Main.getMain().sendSettings();
 			answer = "";
 			
 		}
