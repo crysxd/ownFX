@@ -94,7 +94,7 @@ void setup() {
   }
 
   //show the gradient
-  strip->setBrightness(64);
+  strip->setBrightness(EEPROM.read(EEPROM_CURRENT_BRIGHTNESS);
   strip->show();
 
   //Load current profile
@@ -133,6 +133,7 @@ void loadNextAnimationStep() {
   struct ColorStop** colorStops = NULL;
   loadFrame(currentFrameIndex, &frame, &colorStops);
   
+  /*
   Serial.println("-------------------");
   Serial.print("colorStopCount: ");
   Serial.println(frame->colorStopCount);
@@ -156,6 +157,7 @@ void loadNextAnimationStep() {
   Serial.println(colorStops[1]->g);
   Serial.print("firstColorStop->b: ");
   Serial.println(colorStops[1]->b);
+  */
   
   uint8_t r[60];
   uint8_t g[60];
