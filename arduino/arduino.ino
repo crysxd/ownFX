@@ -86,16 +86,9 @@ void setup() {
   //Create Neopixels strip and init
   strip = &Adafruit_NeoPixel(ledCount, neopixelsPin, NEO_GRB + NEO_KHZ800);
   strip->begin();
-  
-  //Apply red to green gradient
-  for(int i=0; i<60; i++) {
-    strip->setPixelColor(i, 0, 0, 255);
-
-  }
 
   //show the gradient
   strip->setBrightness(EEPROM.read(EEPROM_CURRENT_BRIGHTNESS));
-  strip->show();
 
   //Load current profile
   applyProfile();
