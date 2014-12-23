@@ -60,22 +60,21 @@ void setup() {
   //If the initialise flag is exactly 42, this application was used before and is initialised
   //If not, we must set some settings
   if(EEPROM.read(EEPROM_INITIALISED_FLAG) != 42) {
-    Serial.println("INIT");
-     //Set the current profile id to zero
-     uint64_t v = 0;
-     EEPROMwrite64(EEPROM_CURRENT_PROFILE_ID, &v);
+    //Set the current profile id to zero
+    uint64_t v = 0;
+    EEPROMwrite64(EEPROM_CURRENT_PROFILE_ID, &v);
      
-     //Set the led Count to 60
-     EEPROM.writeInt(EEPROM_LED_COUNT, 60);
+    //Set the led Count to 60
+    EEPROM.writeInt(EEPROM_LED_COUNT, 60);
      
-     //Set the current system brightness to max
-     EEPROM.write(EEPROM_CURRENT_BRIGHTNESS, 255);
+    //Set the current system brightness to max
+    EEPROM.write(EEPROM_CURRENT_BRIGHTNESS, 255);
      
-     //Set the neopixels' pin to 6
-     EEPROM.write(EEPROM_NEOPIXLES_PIN, 6);
+    //Set the neopixels' pin to 6
+    EEPROM.write(EEPROM_NEOPIXLES_PIN, 6);
      
-     //Set the flag so we wont initialise again
-     EEPROM.write(EEPROM_INITIALISED_FLAG, 42);
+    //Set the flag so we wont initialise again
+    EEPROM.write(EEPROM_INITIALISED_FLAG, 42);
      
   }
   
