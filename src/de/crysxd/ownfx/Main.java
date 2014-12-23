@@ -1,21 +1,19 @@
 package de.crysxd.ownfx;
 
-import java.awt.AWTException;
-import java.io.File;
+import gnu.io.PortInUseException;
+import gnu.io.UnsupportedCommOperationException;
+import java.awt.Color;
 
+import javax.naming.CommunicationException;
 import javax.swing.UIManager;
 
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.DefaultHandler;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
-
 public class Main {
-
-	private static Main mainInstance;
-
+	
+	/*
+	 * -----------------------------------------------------------------------------------
+	 * static
+	 */
+	
 	public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -25,19 +23,7 @@ public class Main {
 			
 		}	
 		
-		Main.mainInstance = new Main();
-		
-		try {
-			Main.mainInstance.init();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			
-		}
-	}
-		
-	public static Main getMain() {
-		return mainInstance;
+		new Main();
 		
 	}
 	
@@ -46,102 +32,56 @@ public class Main {
 	 * Non-static
 	 */
 	
-	private ArduinoCommunicator arduinoCom;
-	private SettingsManager sManager;
-	private ProfileManager pManager;
+	private final ArduinoCommunicator ARDUINO_COM;
+	private String comPort;
+	
 	public Main() {
-		
-	}
-	
-	private void init() throws Exception {
-		sManager = new SettingsManager();
-		pManager = new ProfileManager();
-		this.createArduinoCommunicator();
-		
-		pManager.setActiveProfile(this.arduinoCom.getCurrentProfileId());
+		this.ARDUINO_COM = new ArduinoCommunicator();
+		Color currentColor = null;
+		this.comPort = Ui.queryComPort();
 		
 		try {
-			new TrayControl();
+			currentColor = this.ARDUINO_COM.start(this.comPort);
 			
-		} catch (AWTException e) {
-			e.printStackTrace();
-			
-		}
+		} catch (Exception e) {
+			this.handleCommnicationException(e);
+			System.exit(1);
 		
-		//Create Jetty HTTP Server
-		Server server = new Server();
-
-		//create and add Connector for given port
-		SelectChannelConnector connector = new SelectChannelConnector();
-		connector.setPort(80);
-		server.addConnector(connector);
-
-		//Create Resource Handler for accessing local files over HTTP
-		ResourceHandler resourceHandler = new ResourceHandler();
-
-		//Set Settings for the eRsourceHandler
-		resourceHandler.setDirectoriesListed(true);
-		resourceHandler.setWelcomeFiles(new String[]{ "index.html" });
-		resourceHandler.setResourceBase(new File("web").getAbsolutePath());
-
-		//Create a HandlerList including the ResourceHandler, a RestHandler (for accessing the Database) and a DefaultHandler
-		HandlerList handlers = new HandlerList();
-		handlers.setHandlers(new Handler[] {pManager, sManager, resourceHandler, new DefaultHandler() });
-		server.setHandler(handlers);
-
-		//Start Server (seperate Thread)
-		server.start();
+		} 
 		
-	}
-	
-	public void createArduinoCommunicator() {
 		try {
-			if(arduinoCom != null)
-				try {
-					this.arduinoCom.close();
-					
-				} catch(Exception e) {}
-			
-			this.arduinoCom = new ArduinoCommunicator(this.sManager.getCurrentSettings().getSerialInterfaceSelected());
+			new Ui(this, currentColor);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			this.arduinoCom = null;
-			//TODO Fehlermeldung
+			this.ARDUINO_COM.stop();
+			Ui.showErrorDialog("Unable to create the user interface.");
 
-		} 
+		}
 	}
 	
-	public void sendSettings() {
+	public void applyColor(Color c) {
 		try {
-			this.arduinoCom.sendSettings(this.sManager.getCurrentSettings());
-			
-		} catch(Exception e) {
-			e.printStackTrace();
-			//TODO Fehlermeldung
-
-		} 
-		
-		this.createArduinoCommunicator();
-
-	}
-	
-	public void sendSelectedProfile() {
-		try {
-			this.arduinoCom.sendProfile(this.pManager.getActiveProfile());
-			this.createArduinoCommunicator();
-			
+			this.ARDUINO_COM.sendColor(c);
 		} catch (Exception e) {
-			e.printStackTrace();
-			//TODO Fehlermeldung
+			this.handleCommnicationException(e);
 			
 		}
-		
 	}
 	
-	public void setSystemBrightness(int percent) {
-		sManager.getCurrentSettings().setSystemBrightness((int) (percent*2.55));
-		this.sendSettings();
+	private void handleCommnicationException(Exception e) {
+		if(e instanceof PortInUseException) {
+			Ui.showErrorDialog("An other application is using '" + this.comPort + "'. Please close this application.");
+
+		} else if(e instanceof CommunicationException || e instanceof UnsupportedCommOperationException) {
+			Ui.showErrorDialog("The communication with the Arduino failed.\nPlease upload the correct firmware to the Arduino and check the COM port.");
+
+		} else {
+			Ui.showErrorDialog("An error occured while setting up the communication with the Arduino.");
+
+		}
 		
+		e.printStackTrace();
+
 	}
 } 

@@ -177,13 +177,13 @@ public class SerialConnection {
 	}
 	
 	/**
-	 * Reads 8 bits represented by a {@link Byte}.
-	 * @return the read {@link Byte}
+	 * Reads 8 bits represented by a int.
+	 * @return the read int from 0 to 255
 	 * @throws IOException
 	 */
-	public byte read8() throws IOException {
+	public int read8() throws IOException {
 		this.waitForInput(this.DEFAULT_POLLING_RATE, 1);
-		return (byte) this.getInputStream().read();
+		return this.getInputStream().read();
 
 	}
 	
