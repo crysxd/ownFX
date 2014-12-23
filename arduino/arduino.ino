@@ -86,21 +86,15 @@ void saveCurrentColorToEEPROM() {
  response.  Multiple bytes of data may be available.
  */
 void serialEvent() {
-  Serial.println("serialEvent()");
   
   //Read the new color and new brigthness
-  current_color_r = readBlocking();
-  Serial.println("received r");
-  current_color_g = readBlocking();
-  Serial.println("received g");
-  current_color_b = readBlocking();
-  Serial.println("received b");
+  current_color_r    = readBlocking();
+  current_color_g    = readBlocking();
+  current_color_b    = readBlocking();
   current_brigthness = readBlocking();
-  Serial.println("received a");
   
   //send done
   sendDone();
-  Serial.println("send done");
 
   //save new color and brigthness to EEPROM
   saveCurrentColorToEEPROM();
