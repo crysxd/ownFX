@@ -83,7 +83,7 @@ void setup() {
   uint8_t neopixelsPin = EEPROM.readInt(EEPROM_NEOPIXLES_PIN);
   
   //Create Neopixels strip and init
-  strip = &Adafruit_NeoPixel(ledCount, neopixelsPin, NEO_GRB + NEO_KHZ800);
+  strip = new Adafruit_NeoPixel(ledCount, neopixelsPin, NEO_GRB + NEO_KHZ800);
   strip->begin();
 
   //show the gradient
