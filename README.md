@@ -6,3 +6,7 @@ controlled by a webpage hosted on the local machine in order allow remote contro
 
 Stay tuned and have a look at the developer's diary:
 http://extreme.pcgameshardware.de/tagebuecher/355883-tagebuch-led-beleuchtung-mit-arduino.html
+
+
+Installation Manual (German):
+http://extreme.pcgameshardware.de/casemods/389199-howto-rgb-beleuchtung-mit-arduino-ownfx.html
