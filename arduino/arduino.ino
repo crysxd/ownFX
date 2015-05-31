@@ -1,7 +1,7 @@
 #include <Adafruit_NeoPixel.h>
 #include <EEPROMex.h>
 #include <EEPROMVar.h>
-#include <stdint>
+#include <stdint.h>
 
 #define EEPROM_CURRENT_PROFILE_START       64
 #define EEPROM_CURRENT_PROFILE_ID           0 // 8 Byte
